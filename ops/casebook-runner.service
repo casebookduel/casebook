@@ -1,0 +1,16 @@
+[Unit]
+Description=Casebook hourly duel
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=casebook
+WorkingDirectory=/opt/casebook
+EnvironmentFile=/etc/casebook/runner.env
+ExecStart=/usr/bin/python3 m1/duel.py run 87600
+# a crash restarts it; reaching the spend cap is a normal exit and stays stopped (the site then shows "paused")
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

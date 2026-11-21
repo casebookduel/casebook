@@ -1,0 +1,18 @@
+[Unit]
+Description=Casebook site
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=casebook
+WorkingDirectory=/opt/casebook/site
+EnvironmentFile=/etc/casebook/site.env
+# localhost, not 127.0.0.1: Next writes this host into each request's URL and the proxy's rewrites (English at the root)
+# are built on "localhost"; with 127.0.0.1 they no longer match, Next proxies them to itself, and behind the tunnel
+# (X-Forwarded-Proto: https) that proxy speaks TLS to a plain HTTP port and every root URL answers 500
+ExecStart=/usr/bin/node node_modules/next/dist/bin/next start -p 3000 -H localhost
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

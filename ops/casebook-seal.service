@@ -1,0 +1,20 @@
+[Unit]
+Description=Casebook seals: write each new hour's SHA-256 to the seal contract
+After=network-online.target casebook-site.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+# its own user and a root-owned copy of the script (/opt/casebook-seal), so a bug in the site can neither read the
+# sealer key nor change the code that holds it; it reads the hours over HTTP from the site and keeps its records in
+# /var/lib/casebook-seal, which the site reads
+User=casebook-seal
+StateDirectory=casebook-seal
+WorkingDirectory=/opt/casebook-seal
+EnvironmentFile=/etc/casebook/seal.env
+Environment=SEALS_FILE=/var/lib/casebook-seal/seals.jsonl
+ExecStart=/usr/bin/node /opt/casebook-seal/seal.mjs
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true

@@ -1,0 +1,11 @@
+[profile.default]
+src = "src"
+test = "test"
+out = "out"
+libs = []
+solc = "0.8.28"
+optimizer = true
+optimizer_runs = 200
+# paris: no PUSH0 or MCOPY, so the bytecode runs on any Arbitrum Orbit version
+evm_version = "paris"
+bytecode_hash = "none"
