@@ -39,7 +39,7 @@ const en = {
   method: {
     kicker: "How an hour runs", a: "The chain sets the questions.", b: "A script checks the answers.",
     lede: "Hour {h}, step by step, with its real numbers. No model writes a question, a key or a grade.",
-    k1: "Questions", t1: "{q} fresh questions", d1: "Drawn from the tokens the factory launched in the 36,000 blocks before block {b}.",
+    k1: "Questions", t1: "{q} fresh questions", d1: "Drawn from the tokens the factory launched in the hour before block {b}; a quiet hour looks back up to six hours.",
     k2: "Answer keys", t2: "Keys from the chain", d2: "{n} keys read from the factory's logs and one contract call, before either agent started.",
     k3: "Answers", t3: "Same model, both agents", d3: "Holmes used {h} tool calls, Moriarty {m}. At most {c} per question.",
     k4: "Grading", t4: "Exact match only", d4: "Holmes {h}/{n}, Moriarty {m}/{n}. Close does not count.",
@@ -82,7 +82,7 @@ const en = {
     title: "Fair questions.", subA: "The method is on", how: "how it works", subB: "; the numbers are in the", raw: "raw data", subC: ".",
     items: [
       { q: "Is there a $CASE token?", a: "Not yet. No contract has been posted. Until one is posted on this site, treat any address that claims to be $CASE as fake." },
-      { q: "What do the agents actually do?", a: "Every hour each agent gets the same {q} questions about tokens launched on Robinhood Chain in the hour before. They answer with read-only chain tools: JSON-RPC calls, a keccak hasher and a word splitter, at most {c} calls per question." },
+      { q: "What do the agents actually do?", a: "Every hour each agent gets the same {q} questions about tokens launched on Robinhood Chain in the hour before (in a quiet hour, up to six hours before). They answer with read-only chain tools: JSON-RPC calls, a keccak hasher and a word splitter, at most {c} calls per question." },
       { q: "Who writes the answer keys?", a: "The runner computes them from the launchpad factory's event logs and one contract call, before either agent starts. No model touches a key, and the addresses on this site link to the explorer." },
       { q: "Can memory make an agent worse?", a: "Yes. Holmes's notes are his own words and can carry a mistake from one hour into the next. That is why every hour is scored and shown, including the ones he loses." },
       { q: "Is the result significant yet?", a: "From hour {k}, the two-sided sign test over the questions only one of them got right gives {p}. {q} questions an hour is a small sample: read the running totals, not one hour." },
@@ -97,6 +97,7 @@ const en = {
     raw: "Raw data", summary: "Summary JSON", prompts: "The prompts", grading: "The grading rule", harness: "The harness", engine: "Memory engine",
     pd: "Holmes and Moriarty are public-domain characters from Arthur Conan Doyle's stories. The agents drawn here are original designs.",
     contract: "$CASE has no contract yet. Treat any address that is not posted on this site as fake.", ca: "$CASE contract:", last: "Last graded hour: {h}, at {t}.",
+    notOurs: "Not ours: {name} ({sym}), {addr}. It links this site and our X, but we did not launch it.",
     copy: "© 2026 Casebook. An experiment, not investment advice.",
   },
   hours: {
@@ -115,7 +116,7 @@ const en = {
     sources: {
       creator: "The creator topic of the factory's launch event for this token.", curve: "The curve topic of the factory's launch event for this token.",
       launch_block: "The block of the factory's launch event for this token.", tax: "creatorTaxBps() (selector 0xc1bb8901), called on the token's curve contract.",
-      count: "The factory's launch events inside that block range, counted.", graduated: "Yes if the factory emitted a graduation event for this token in the six hours before the question. The tokens asked about for a no all launched in the hour before.",
+      count: "The factory's launch events inside that block range, counted.", graduated: "Yes if the factory emitted a graduation event for this token in the six hours before the question. The tokens asked about for a no all launched inside those six hours.",
     },
   },
   notebook: {

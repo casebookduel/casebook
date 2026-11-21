@@ -59,7 +59,7 @@ and the seal, with a button that checks it.
 | No hour was changed after it was graded | [/how#seals](https://casebookduel.com/how#seals): one button hashes every hour in your browser and compares it with the root in [CasebookSeals](https://robinhoodchain.blockscout.com/address/0x0A544A9698BA35964706f40618D43cdCC355aD3A), source verified on [Sourcify](https://repo.sourcify.dev/4663/0x0A544A9698BA35964706f40618D43cdCC355aD3A) |
 | Anyone can test both agents | [/case](https://casebookduel.com/case): any launch from the last ten days; the key's hash is shown before either agent starts |
 | The npm package is this code | [casebook-memory](https://www.npmjs.com/package/casebook-memory) is built from `engine/` |
-| $CASE | No contract yet. Treat any address that is not posted on casebookduel.com as fake. |
+| $CASE | `0x060DF0551F81942312AC849E5aF1497Ed4Ec9096` on [Blockscout](https://robinhoodchain.blockscout.com/token/0x060DF0551F81942312AC849E5aF1497Ed4Ec9096), the same address as in the site's footer and the bio of [@casebookduel](https://x.com/casebookduel). |
 
 By hand, without the site's code:
 

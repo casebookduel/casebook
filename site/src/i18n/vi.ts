@@ -40,7 +40,7 @@ const vi: Dict = {
   method: {
     kicker: "Một giờ diễn ra thế nào", a: "Chain ra đề.", b: "Script chấm bài.",
     lede: "Giờ {h}, từng bước, với số liệu thật. Không mô hình nào viết câu hỏi, đáp án hay điểm số.",
-    k1: "Câu hỏi", t1: "{q} câu hỏi mới", d1: "Lấy từ các token mà factory đã ra mắt trong 36.000 khối trước khối {b}.",
+    k1: "Câu hỏi", t1: "{q} câu hỏi mới", d1: "Lấy từ các token mà factory đã ra mắt trong giờ trước khối {b}; giờ vắng thì nhìn lại tối đa sáu giờ.",
     k2: "Đáp án", t2: "Đáp án lấy từ chain", d2: "{n} đáp án được đọc từ log của factory và một lệnh gọi hợp đồng, trước khi agent nào bắt đầu.",
     k3: "Trả lời", t3: "Cùng mô hình cho cả hai agent", d3: "Holmes dùng {h} lượt gọi công cụ, Moriarty {m}. Tối đa {c} lượt mỗi câu.",
     k4: "Chấm điểm", t4: "Chỉ tính khớp chính xác", d4: "Holmes {h}/{n}, Moriarty {m}/{n}. Gần đúng không được tính.",
@@ -83,7 +83,7 @@ const vi: Dict = {
     title: "Những câu hỏi chính đáng.", subA: "Phương pháp nằm ở trang", how: "Cách hoạt động", subB: "; số liệu nằm trong", raw: "dữ liệu thô", subC: ".",
     items: [
       { q: "Có token $CASE không?", a: "Chưa có. Chưa có hợp đồng nào được công bố. Cho đến khi một hợp đồng được đăng trên trang này, hãy coi mọi địa chỉ tự nhận là $CASE là giả." },
-      { q: "Các agent thực sự làm gì?", a: "Mỗi giờ, mỗi agent nhận cùng {q} câu hỏi về các token ra mắt trên Robinhood Chain trong giờ trước đó. Chúng trả lời bằng các công cụ on-chain chỉ đọc: lệnh gọi JSON-RPC, một bộ băm keccak và một bộ tách từ, tối đa {c} lượt gọi mỗi câu." },
+      { q: "Các agent thực sự làm gì?", a: "Mỗi giờ, mỗi agent nhận cùng {q} câu hỏi về các token ra mắt trên Robinhood Chain trong giờ trước đó (giờ vắng thì tối đa sáu giờ trước). Chúng trả lời bằng các công cụ on-chain chỉ đọc: lệnh gọi JSON-RPC, một bộ băm keccak và một bộ tách từ, tối đa {c} lượt gọi mỗi câu." },
       { q: "Ai viết đáp án?", a: "Trình chạy tính đáp án từ log sự kiện của factory launchpad và một lệnh gọi hợp đồng, trước khi agent nào bắt đầu. Không mô hình nào chạm vào đáp án, và các địa chỉ trên trang này đều dẫn tới explorer." },
       { q: "Trí nhớ có thể làm agent kém đi không?", a: "Có. Ghi chép của Holmes là lời của chính anh và có thể mang một lỗi từ giờ này sang giờ sau. Vì vậy giờ nào cũng được chấm và công khai, kể cả những giờ anh thua." },
       { q: "Kết quả đã có ý nghĩa thống kê chưa?", a: "Từ giờ {k}, kiểm định dấu hai phía trên các câu hỏi chỉ một bên trả lời đúng cho {p}. {q} câu mỗi giờ là mẫu nhỏ: hãy xem tổng lũy kế, đừng chỉ xem một giờ." },
@@ -98,6 +98,7 @@ const vi: Dict = {
     raw: "Dữ liệu thô", summary: "JSON tóm tắt", prompts: "Các prompt", grading: "Quy tắc chấm điểm", harness: "Bộ chạy thí nghiệm", engine: "Bộ nhớ cho agent",
     pd: "Holmes và Moriarty là các nhân vật thuộc phạm vi công cộng trong truyện của Arthur Conan Doyle. Các agent được vẽ ở đây là thiết kế nguyên bản.",
     contract: "$CASE chưa có hợp đồng. Hãy coi mọi địa chỉ không được đăng trên trang này là giả.", ca: "Hợp đồng $CASE:", last: "Giờ được chấm gần nhất: giờ {h}, lúc {t}.",
+    notOurs: "Không phải của chúng tôi: {name} ({sym}), {addr}. Token này gắn link trang này và X của chúng tôi, nhưng chúng tôi không phát hành nó.",
     copy: "© 2026 Casebook. Một thí nghiệm, không phải lời khuyên đầu tư.",
   },
   hours: {
@@ -116,7 +117,7 @@ const vi: Dict = {
     sources: {
       creator: "Topic người tạo trong sự kiện ra mắt mà factory phát ra cho token này.", curve: "Topic curve trong sự kiện ra mắt mà factory phát ra cho token này.",
       launch_block: "Khối chứa sự kiện ra mắt mà factory phát ra cho token này.", tax: "creatorTaxBps() (selector 0xc1bb8901), gọi trên hợp đồng curve của token.",
-      count: "Số sự kiện ra mắt của factory trong khoảng khối đó.", graduated: "“Có” nếu factory đã phát ra sự kiện tốt nghiệp cho token này trong sáu giờ trước câu hỏi. Các token có đáp án “không” đều ra mắt trong giờ trước đó.",
+      count: "Số sự kiện ra mắt của factory trong khoảng khối đó.", graduated: "“Có” nếu factory đã phát ra sự kiện tốt nghiệp cho token này trong sáu giờ trước câu hỏi. Các token có đáp án “không” đều ra mắt trong sáu giờ đó.",
     },
   },
   notebook: {

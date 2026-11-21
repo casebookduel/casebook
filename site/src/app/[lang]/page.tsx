@@ -20,6 +20,7 @@ import { pText } from "@/lib/facts";
 import { CASES_LIVE } from "@/lib/cases";
 import { SEAL_CONTRACT } from "@/lib/seal";
 import { ENGINE_LIVE, TOKEN_CA } from "@/lib/site";
+import NotOurs from "@/components/NotOurs";
 
 const FACTORY = "0x7ed598bcef8bd9edd8c97a195c6d13f40801ec7e";
 // English names inside translated copy keep English casing: lang="en" stops a Turkish uppercase dotting their i
@@ -103,6 +104,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
             <div className="wrap">
               <div className="intro">
                 {last && <p className="m-score"><span className="mlabel">{fmt(t.hero.hour, { h: last.hour })}</span><span className="holmes">Holmes {last.holmes}/{last.n}</span><span className="moriarty">Moriarty {last.moriarty}/{last.n}</span></p>}
+                {TOKEN_CA && <CopyCa ca={TOKEN_CA} label="$CASE" where="ca-top" />}
                 <p className="pill"><i aria-hidden="true" />{names(t.hero.pill)}<span className="pill-opt">{fmt(t.hero.pillMore, { q })}</span></p>
                 <h1><span className="holmes">{t.hero.h1a}</span><span className="moriarty">{t.hero.h1b}</span></h1>
                 <p className="lede">{t.hero.lede}</p>
@@ -110,7 +112,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                   {last && <Link className="btn btn-solid" href={L(`/hours/${last.hour}`)}>{fmt(t.hero.open, { h: last.hour })} <Arrow /></Link>}
                   {CASES_LIVE ? <Link className="btn btn-line" href={L("/case")}>{t.case.a.replace(/[.。]$/, "")}</Link> : <Link className="btn btn-line" href={L("/how")}>{t.hero.how}</Link>}
                 </div>
-                {TOKEN_CA && <CopyCa ca={TOKEN_CA} label="$CASE" />}
+                {TOKEN_CA && <CopyCa ca={TOKEN_CA} label="$CASE" where="ca-end" />}
               </div>
               {last && <Ticket h={last} time={clock(last.ts)} t={t.ticket} href={L(`/hours/${last.hour}`)} lvl={lvl} />}
             </div>
@@ -221,7 +223,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
           </Rise>
           <div className="faq-list">
             {t.faq.items.map(({ q, a }, i) => (
-              <details key={q} className="qa"><summary>{q}</summary><p>{fmt(i === 0 && TOKEN_CA ? t.faq.live : a, { k: duel.ruleV2From, p: pText(duel.pairs.p), model: MODEL_LINE, ca: TOKEN_CA, q, c })}</p></details>
+              <details key={q} className="qa"><summary>{q}</summary><p>{fmt(i === 0 && TOKEN_CA ? t.faq.live : a, { k: duel.ruleV2From, p: pText(duel.pairs.p), model: MODEL_LINE, ca: TOKEN_CA, q, c })}</p>{i === 0 && <NotOurs text={t.footer.notOurs} />}</details>
             ))}
           </div>
         </div>

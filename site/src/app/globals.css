@@ -714,12 +714,22 @@ pre.block.code { white-space: pre; overflow-wrap: normal; }
 .prose pre + ul { margin-top: 16px; }
 .nowrap { white-space: nowrap; }
 
-/* the token address, once it exists */
-.ca-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 18px; }
-.ca-chip { display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px; border: 1px solid var(--line-2); border-radius: 999px; background: transparent; color: var(--ink); cursor: pointer; transition: border-color 0.2s var(--ease); }
-.ca-chip:hover, .ca-chip:focus-visible { border-color: var(--emerald); }
-.ca-chip .ok, .ca-chip svg { color: var(--emerald); }
-.ca-link { font-size: 0.85rem; color: var(--ink-dim); }
+/* the token address, once it exists: the whole address in the hero, a live dot, one tap copies it */
+.hero-copy .ca-row, .hero-copy .ca-row * { pointer-events: auto; }
+.ca-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 20px; }
+.ca-live { display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono), monospace; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; color: var(--emerald); }
+.ca-live i { width: 7px; height: 7px; border-radius: 50%; background: var(--emerald); animation: ca-live 2.4s var(--ease) infinite; }
+@keyframes ca-live { 0% { box-shadow: 0 0 0 0 rgba(59, 220, 146, 0.55); } 70%, 100% { box-shadow: 0 0 0 9px rgba(59, 220, 146, 0); } }
+.ca-chip { display: inline-flex; align-items: center; gap: 12px; padding: 9px 12px 9px 16px; border: 1px solid rgba(59, 220, 146, 0.35); border-radius: 12px; background: rgba(5, 12, 8, 0.6); color: var(--ink); font-size: 0.92rem; cursor: pointer; transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease); }
+.ca-chip:hover, .ca-chip:focus-visible, .ca-chip.done { border-color: var(--emerald); background: rgba(59, 220, 146, 0.08); }
+.ca-chip .ca-act { display: inline-flex; padding-left: 12px; border-left: 1px solid var(--line-2); color: var(--emerald); }
+.ca-chip .ca-short { display: none; }
+@media (max-width: 720px) { .ca-chip .ca-full { display: none; } .ca-chip .ca-short { display: inline; } }
+.ca-row.ca-top { display: none; }   /* a phone sees the address above the fold, a wide screen under the buttons */
+@media (max-width: 720px) { .ca-row.ca-top { display: flex; flex-wrap: nowrap; margin: 14px 0 16px; } .ca-row.ca-top .ca-link, .ca-row.ca-end { display: none; } }
+.ca-link { font-size: 0.82rem; color: var(--ink-dim); }
+.ca-link:hover, .ca-link:focus-visible { color: var(--emerald); }
+@media (prefers-reduced-motion: reduce) { .ca-live i { animation: none; } }
 
 /* seal row on an hour page: the seal tx, the in-browser check, and its result */
 .seal-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 20px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 0.92rem; }

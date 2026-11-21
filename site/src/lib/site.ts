@@ -12,3 +12,9 @@ export const ENGINE_LIVE = process.env.ENGINE_LIVE === "1";
 // The $CASE contract, set on launch day. Until then the footer says there is no contract yet.
 const ca = (process.env.NEXT_PUBLIC_TOKEN_CA ?? "").trim();
 export const TOKEN_CA = /^0x[0-9a-fA-F]{40}$/.test(ca) ? ca : "";
+
+// Tokens that use Casebook's name or links but were not launched by us. Each one is named in the footer and in the
+// token answer of the FAQ, because their on-chain links send people here.
+export const NOT_OURS: { name: string; sym: string; addr: string }[] = [
+  { name: "Casebook Duel", sym: "$HOLMES", addr: "0x8c8763eed785e6a89dae564f428dd1e56b134306" },   // 21 Nov 2026
+];

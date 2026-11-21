@@ -19,6 +19,7 @@ import { ENGINE_LIVE, GITHUB_URL, SITE_URL, TOKEN_CA, X_URL } from "@/lib/site";
 import { OPEN } from "@/lib/open";
 import { TEACH_ON } from "@/lib/lessons";
 import { LEAGUE_ON } from "@/lib/league";
+import NotOurs from "@/components/NotOurs";
 import "../globals.css";
 
 const display = Archivo({ subsets: ["latin", "latin-ext", "vietnamese"], axes: ["wdth"], variable: "--font-display" });
@@ -96,6 +97,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
             <div className="foot-legal">
               <p>{f.pd}</p>
               <p>{TOKEN_CA ? <>{f.ca} <a className="addr mono" href={`${EXPLORER}/token/${TOKEN_CA}`} target="_blank" rel="noreferrer">{TOKEN_CA}</a></> : f.contract}</p>
+              <NotOurs text={f.notOurs} />
               {last && <p>{fmt(f.last, { h: last.hour, t: clock(last.ts) })}</p>}
               <p>{f.copy}</p>
             </div>

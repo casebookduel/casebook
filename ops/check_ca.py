@@ -1,6 +1,7 @@
 """Check a token address on Robinhood Chain before it goes on the site: it must hold code and answer symbol() with
-the expected ticker. Prints what it read; exits 0 only when the check passes.
-    python3 ops/check_ca.py 0x... [--symbol CASE]"""
+the expected ticker, and, with --creator, have been launched by that wallet (the token's deployer() getter). Prints
+what it read; exits 0 only when the check passes.
+    python3 ops/check_ca.py 0x... [--symbol CASE] [--creator 0x...]"""
 import json
 import re
 import sys
@@ -32,6 +33,7 @@ def main():
     args = sys.argv[1:]
     ca = args[0] if args else ""
     want = args[args.index("--symbol") + 1] if "--symbol" in args else "CASE"
+    creator = args[args.index("--creator") + 1].lower() if "--creator" in args else ""
     if not re.fullmatch(r"0x[0-9a-fA-F]{40}", ca):
         raise SystemExit("usage: python3 ops/check_ca.py 0x<40 hex> [--symbol CASE]")
     code = call("eth_getCode", [ca, "latest"])
@@ -45,6 +47,12 @@ def main():
     print(f"{ca}: {len(code) // 2 - 1} bytes of code, name {name!r}, symbol {sym!r}, {dec} decimals, supply {supply:,.0f}")
     if sym != want:
         raise SystemExit(f"symbol is {sym!r}, expected {want!r}: not putting this address on the site")
+    if creator:
+        # deployer() 0xd5f39488 (keccak of the signature, checked against a live launch: it returns the launch's creator)
+        dep = "0x" + call("eth_call", [{"to": ca, "data": "0xd5f39488"}, "latest"])[-40:]
+        print(f"deployer {dep}")
+        if dep.lower() != creator:
+            raise SystemExit(f"deployer is {dep}, not our wallet {creator}: not putting this address on the site")
     print("ok")
 
 

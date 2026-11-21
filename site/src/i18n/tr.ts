@@ -40,7 +40,7 @@ const tr: Dict = {
   method: {
     kicker: "Bir saat nasıl işler", a: "Soruları zincir belirler.", b: "Cevapları bir script denetler.",
     lede: "{h}. saat, adım adım ve gerçek rakamlarıyla. Hiçbir model soru, cevap anahtarı ya da puan yazmaz.",
-    k1: "Sorular", t1: "{q} yeni soru", d1: "Fabrikanın {b} numaralı bloktan önceki 36.000 blokta başlattığı token'lardan seçilir.",
+    k1: "Sorular", t1: "{q} yeni soru", d1: "Fabrikanın {b} numaralı bloktan önceki bir saatte başlattığı token'lardan seçilir; sakin bir saatte altı saate kadar geriye bakılır.",
     k2: "Cevap anahtarları", t2: "Anahtarlar zincirden", d2: "{n} cevap anahtarı, iki ajan da başlamadan önce fabrikanın loglarından ve tek bir kontrat çağrısından okundu.",
     k3: "Cevaplar", t3: "İki ajan, aynı model", d3: "Holmes {h}, Moriarty {m} araç çağrısı yaptı. Soru başına en fazla {c}.",
     k4: "Puanlama", t4: "Yalnızca birebir eşleşme", d4: "Holmes {h}/{n}, Moriarty {m}/{n}. Yakın olması yetmez.",
@@ -83,7 +83,7 @@ const tr: Dict = {
     title: "Yerinde sorular.", subA: "Yöntem", how: "Nasıl çalışır", subB: " sayfasında; rakamlar", raw: "ham veride", subC: ".",
     items: [
       { q: "$CASE diye bir token var mı?", a: "Henüz yok. Hiçbir kontrat yayımlanmadı. Bu sitede bir kontrat yayımlanana kadar kendini $CASE olarak tanıtan her adresi sahte kabul edin." },
-      { q: "Ajanlar tam olarak ne yapıyor?", a: "Her saat iki ajan da Robinhood Chain üzerinde bir önceki saatte başlatılan token'lar hakkında aynı {q} soruyu alır. Salt okunur zincir araçlarıyla cevap verirler: JSON-RPC çağrıları, bir keccak hash aracı ve bir kelime ayırıcı; soru başına en fazla {c} çağrı." },
+      { q: "Ajanlar tam olarak ne yapıyor?", a: "Her saat iki ajan da Robinhood Chain üzerinde bir önceki saatte (sakin bir saatte altı saate kadar önce) başlatılan token'lar hakkında aynı {q} soruyu alır. Salt okunur zincir araçlarıyla cevap verirler: JSON-RPC çağrıları, bir keccak hash aracı ve bir kelime ayırıcı; soru başına en fazla {c} çağrı." },
       { q: "Cevap anahtarlarını kim yazıyor?", a: "Deneyi yürüten script, iki ajan da başlamadan önce bunları launchpad fabrikasının olay loglarından ve tek bir kontrat çağrısından hesaplar. Hiçbir model bir anahtara dokunmaz; bu sitedeki adresler blok gezginine bağlanır." },
       { q: "Hafıza bir ajanı daha kötü yapabilir mi?", a: "Evet. Holmes'un notları kendi sözleridir ve bir hatayı bir saatten sonrakine taşıyabilir. Bu yüzden kaybettikleri de dahil her saat puanlanır ve gösterilir." },
       { q: "Sonuç şimdiden anlamlı mı?", a: "{k}. saatten itibaren, yalnızca birinin doğru bildiği sorular üzerinde çift yönlü işaret testi {p} veriyor. Saatte {q} soru küçük bir örneklemdir: tek bir saate değil, birikimli toplamlara bakın." },
@@ -98,6 +98,7 @@ const tr: Dict = {
     raw: "Ham veri", summary: "Özet JSON", prompts: "Prompt'lar", grading: "Puanlama kuralı", harness: "Deney düzeneği", engine: "Hafıza motoru",
     pd: "Holmes ve Moriarty, Arthur Conan Doyle'un öykülerindeki kamu malı karakterlerdir. Burada çizilen ajanlar özgün tasarımlardır.",
     contract: "$CASE için henüz bir kontrat yok. Bu sitede yayımlanmayan her adresi sahte kabul edin.", ca: "$CASE sözleşmesi:", last: "Son puanlama: {h}. saat, {t}.",
+    notOurs: "Bizim değil: {name} ({sym}), {addr}. Bu siteye ve X hesabımıza bağlantı veriyor, ama onu biz başlatmadık.",
     copy: "© 2026 Casebook. Bir deneydir, yatırım tavsiyesi değildir.",
   },
   hours: {
@@ -116,7 +117,7 @@ const tr: Dict = {
     sources: {
       creator: "Fabrikanın bu token için yaydığı lansman olayındaki yaratıcı topic'i.", curve: "Fabrikanın bu token için yaydığı lansman olayındaki curve topic'i.",
       launch_block: "Fabrikanın bu token için yaydığı lansman olayının bloğu.", tax: "Token'ın curve kontratında çağrılan creatorTaxBps() (selector 0xc1bb8901).",
-      count: "Fabrikanın o blok aralığındaki lansman olaylarının sayısı.", graduated: "Sorudan önceki altı saat içinde fabrika bu token için bir mezuniyet olayı yaydıysa cevap “evet” olur. Cevabı “hayır” olan token'ların hepsi bir önceki saatte başlatıldı.",
+      count: "Fabrikanın o blok aralığındaki lansman olaylarının sayısı.", graduated: "Sorudan önceki altı saat içinde fabrika bu token için bir mezuniyet olayı yaydıysa cevap “evet” olur. Cevabı “hayır” olan token'ların hepsi bu altı saat içinde başlatıldı.",
     },
   },
   notebook: {

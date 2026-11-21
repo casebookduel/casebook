@@ -47,7 +47,7 @@ ssh root@SERVER tail -n 3 /opt/casebook/m1/out/run.log
 
 | Task | Command |
 |---|---|
-| Ship a site change | `rsync -az --exclude node_modules --exclude .next site root@SERVER:/opt/casebook/`, then on the server `cd /opt/casebook/site && runuser -u casebook -- sh -c 'set -a; . /etc/casebook/site.env; set +a; node node_modules/next/dist/bin/next build' && systemctl restart casebook-site` |
+| Ship a site change | `rsync -az --exclude node_modules --exclude .next --exclude '.env*' site/ root@SERVER:/opt/casebook/site/`, then on the server `sh /opt/casebook/ops/rebuild-site.sh`: it builds a copy while the old build keeps serving, swaps them, restarts (about a second) and puts the old one back if the new one does not answer. Never build in `/opt/casebook/site` itself, and never restart after a failed build. |
 | Raise the spend cap | Edit `DUEL_CAP` in `/etc/casebook/runner.env`, then `systemctl restart casebook-runner`. |
 | Stop the duel | `systemctl stop casebook-runner`. The site keeps every hour and shows the duel as paused. |
 | Logs | `journalctl -u casebook-site -f` and `tail -f /opt/casebook/m1/out/run.log` |
@@ -79,7 +79,7 @@ nor change the script that holds it.
    cd /opt/casebook-seal && set -a && . /etc/casebook/seal.env && set +a && node seal.mjs deploy
    ```
    It prints `SEAL_CONTRACT=0x...`. Add that line to both `/etc/casebook/seal.env` and `/etc/casebook/site.env`.
-3. Run `sh /opt/casebook/ops/setup.sh` again. It rebuilds the site (the hour pages get the seal row and the check
+3. Rebuild with `sh /opt/casebook/ops/rebuild-site.sh` (setup.sh builds too, but it does not restart a running site). The hour pages get the seal row and the check
    button, /how gets its Seals section) and starts `casebook-seal.timer`. The first run seals every earlier hour in
    batches of 40; after that, each hour is sealed a few minutes after it is graded.
 4. Verify the source on Sourcify, which serves Robinhood Chain, from any machine with Foundry (no key needed):
@@ -102,7 +102,7 @@ Each case costs about $0.005–0.04 in model calls, so it is off until the owner
    duel's credit.
 2. In `/etc/casebook/site.env` set `CASES_LIVE=1` and `CASE_OPENROUTER_API_KEY=` that key. `CASE_FREE_PER_DAY` (3)
    is per visitor; `CASE_DAILY_USD` (2) is the total for everyone, after which cases close until 00:00 UTC.
-3. Run `sh /opt/casebook/ops/setup.sh` again to rebuild. The nav, the hero and the footer get the Case link.
+3. Rebuild with `sh /opt/casebook/ops/rebuild-site.sh`. The nav, the hero and the footer get the Case link.
 
 Cases are saved in `/opt/casebook/m1/cases/` (one JSON per case, plus `cases.jsonl`, plus `spend.jsonl`, one line per
 paid model call, which the daily budget sums). They never touch the hourly record or Holmes's notebook.

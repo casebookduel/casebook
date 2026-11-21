@@ -40,7 +40,7 @@ const es: Dict = {
   method: {
     kicker: "Cómo transcurre una hora", a: "La cadena pone las preguntas.", b: "Un script corrige las respuestas.",
     lede: "La hora {h}, paso a paso, con sus cifras reales. Ningún modelo escribe preguntas, soluciones ni calificaciones.",
-    k1: "Preguntas", t1: "{q} preguntas nuevas", d1: "Sacadas de los tokens que la fábrica lanzó en los 36 000 bloques anteriores al bloque {b}.",
+    k1: "Preguntas", t1: "{q} preguntas nuevas", d1: "Sacadas de los tokens que la fábrica lanzó en la hora anterior al bloque {b}; una hora tranquila mira hasta seis horas atrás.",
     k2: "Soluciones", t2: "Soluciones sacadas de la cadena", d2: "{n} soluciones leídas de los logs de la fábrica y de una llamada a un contrato, antes de que empezara ningún agente.",
     k3: "Respuestas", t3: "Mismo modelo, ambos agentes", d3: "Holmes usó {h} llamadas a herramientas y Moriarty {m}. Como máximo {c} por pregunta.",
     k4: "Calificación", t4: "Solo coincidencia exacta", d4: "Holmes {h}/{n}, Moriarty {m}/{n}. Casi no cuenta.",
@@ -83,7 +83,7 @@ const es: Dict = {
     title: "Preguntas razonables.", subA: "El método se explica en", how: "Cómo funciona", subB: "; las cifras están en los", raw: "datos en bruto", subC: ".",
     items: [
       { q: "¿Hay un token $CASE?", a: "Todavía no. No se ha publicado ningún contrato. Hasta que se publique uno en este sitio, considera falsa cualquier dirección que diga ser $CASE." },
-      { q: "¿Qué hacen exactamente los agentes?", a: "Cada hora, cada agente recibe las mismas {q} preguntas sobre tokens lanzados en Robinhood Chain durante la hora anterior. Responden con herramientas de solo lectura sobre la cadena: llamadas JSON-RPC, un hasher keccak y un separador de palabras, con un máximo de {c} llamadas por pregunta." },
+      { q: "¿Qué hacen exactamente los agentes?", a: "Cada hora, cada agente recibe las mismas {q} preguntas sobre tokens lanzados en Robinhood Chain durante la hora anterior (en una hora tranquila, hasta seis horas antes). Responden con herramientas de solo lectura sobre la cadena: llamadas JSON-RPC, un hasher keccak y un separador de palabras, con un máximo de {c} llamadas por pregunta." },
       { q: "¿Quién escribe las soluciones?", a: "El script del experimento las calcula a partir de los logs de eventos de la fábrica del launchpad y de una llamada a un contrato, antes de que empiece ningún agente. Ningún modelo toca una solución, y las direcciones de este sitio enlazan al explorador." },
       { q: "¿Puede la memoria empeorar a un agente?", a: "Sí. Las notas de Holmes son sus propias palabras y pueden arrastrar un error de una hora a la siguiente. Por eso cada hora se califica y se muestra, incluidas las que pierde." },
       { q: "¿Ya es significativo el resultado?", a: "Desde la hora {k}, la prueba de signos bilateral sobre las preguntas que solo uno de los dos acertó da {p}. {q} preguntas por hora es una muestra pequeña: mira los totales acumulados, no una sola hora." },
@@ -98,6 +98,7 @@ const es: Dict = {
     raw: "Datos en bruto", summary: "Resumen JSON", prompts: "Los prompts", grading: "La regla de calificación", harness: "El arnés", engine: "Motor de memoria",
     pd: "Holmes y Moriarty son personajes de dominio público de los relatos de Arthur Conan Doyle. Los agentes dibujados aquí son diseños originales.",
     contract: "$CASE aún no tiene contrato. Considera falsa cualquier dirección que no esté publicada en este sitio.", ca: "Contrato de $CASE:", last: "Última hora calificada: {h}, a las {t}.",
+    notOurs: "No es nuestro: {name} ({sym}), {addr}. Enlaza este sitio y nuestra cuenta de X, pero no lo lanzamos nosotros.",
     copy: "© 2026 Casebook. Un experimento, no una recomendación de inversión.",
   },
   hours: {
@@ -116,7 +117,7 @@ const es: Dict = {
     sources: {
       creator: "El topic del creador en el evento de lanzamiento que la fábrica emitió para este token.", curve: "El topic de la curva en el evento de lanzamiento que la fábrica emitió para este token.",
       launch_block: "El bloque del evento de lanzamiento que la fábrica emitió para este token.", tax: "creatorTaxBps() (selector 0xc1bb8901), llamado en el contrato de la curva del token.",
-      count: "Los eventos de lanzamiento de la fábrica dentro de ese rango de bloques, contados.", graduated: "Es «sí» si la fábrica emitió un evento de graduación para este token en las seis horas anteriores a la pregunta. Los tokens cuya respuesta es «no» se lanzaron todos en la hora anterior.",
+      count: "Los eventos de lanzamiento de la fábrica dentro de ese rango de bloques, contados.", graduated: "Es «sí» si la fábrica emitió un evento de graduación para este token en las seis horas anteriores a la pregunta. Los tokens cuya respuesta es «no» se lanzaron todos dentro de esas seis horas.",
     },
   },
   notebook: {
