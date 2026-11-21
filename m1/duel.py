@@ -154,13 +154,24 @@ def pick(rng, cands, good):
     return rng.choice(g if g and rng.random() < 0.75 else cands)
 
 
+MIN_LAUNCHES = 6   # enough launches for six different questions
+MAX_SPAN_H = 6     # how far a quiet hour looks back; the graduation range below covers the same six hours
+
+
 def context(rng):
+    """the launches an hour's questions come from: the last hour's, or in a quiet hour the last 2, 3, ... hours (at most
+    MAX_SPAN_H), so the hour still gets its quiz. Every question names its own blocks, so a wider window changes no
+    wording; `span` is the window in blocks."""
     head = int(call("eth_blockNumber", []), 16)
-    L = logs([T_LAUNCH], head - BLOCKS_PER_H, head)
+    span, L = 1, logs([T_LAUNCH], head - BLOCKS_PER_H, head)
+    while len(L) < MIN_LAUNCHES and span < MAX_SPAN_H:
+        span += 1
+        L = logs([T_LAUNCH], head - span * BLOCKS_PER_H, head - (span - 1) * BLOCKS_PER_H - 1) + L
+    if len(L) < MIN_LAUNCHES: raise RuntimeError(f"only {len(L)} launches in the last {span} hours")
+    if span > 1: log(f"quiet hour: {len(L)} launches in the last {span} hours")
     G = logs([T_GRAD], head - 6 * BLOCKS_PER_H, head)
-    if len(L) < 6: raise RuntimeError(f"only {len(L)} launches in the last hour")
     ls = [dict(token=a1(e), curve=a2(e), creator="0x" + e["topics"][3][-40:], block=bn(e), log=e) for e in L]
-    return dict(head=head, rng=rng, ls=ls, grads={a1(e): e for e in G})
+    return dict(head=head, rng=rng, ls=ls, grads={a1(e): e for e in G}, span=span * BLOCKS_PER_H)
 
 
 def by_address(es):
@@ -170,14 +181,14 @@ def by_address(es):
 
 
 def trades(c):
-    """Buy and Sell logs of every curve launched in the last hour, up to the head, by curve, oldest first (fetched once)"""
+    """Buy and Sell logs of every curve launched in the window, up to the head, by curve, oldest first (fetched once)"""
     if "trades" not in c:
         c["trades"] = by_address(logs([[T_BUY, T_SELL]], min(l["block"] for l in c["ls"]), c["head"], [l["curve"] for l in c["ls"]]))
     return c["trades"]
 
 
 def xfers(c):
-    """Transfer logs of every token launched in the last hour, up to the head, by token, oldest first (fetched once)"""
+    """Transfer logs of every token launched in the window, up to the head, by token, oldest first (fetched once)"""
     if "xfers" not in c:
         c["xfers"] = by_address(logs([T_TRANSFER], min(l["block"] for l in c["ls"]), c["head"], [l["token"] for l in c["ls"]]))
     return c["xfers"]
@@ -233,7 +244,7 @@ def first_buyer(c):
         # a recipient that passes the tokens on in the same tx is a router: "who got the tokens" would be ambiguous
         if e and not any(x["transactionHash"] == e["transactionHash"] and a1(x) == a2(e) for x in xfers(c).get(l["token"], [])):
             cands.append((l, e))
-    if not cands: raise Skip("no launch of the last hour has a clean first buy by someone other than its creator")
+    if not cands: raise Skip("no launch in the window has a clean first buy by someone other than its creator")
     l, e = c["rng"].choice(cands)
     return dict(kind="first_buyer", q=f"Not counting the token's creator, which address received tokens in the first buy on the bonding curve of the token {l['token']} from the launchpad factory {FACTORY}?",
                 a=a2(e), evidence=[ref(l["log"], "launch event (creator, curve)"), ref(e, "first buy on the curve whose recipient (topic 2) is not the creator")], x=dict(l=l))
@@ -265,7 +276,7 @@ def creator_sold(c):
 
 
 def creator_launches(c):
-    A, B = c["head"] - BLOCKS_PER_H, c["head"]
+    A, B = c["head"] - c["span"], c["head"]   # the same window as c["ls"], or the count would not match the question
     n = Counter(l["creator"] for l in c["ls"])
     l = pick(c["rng"], c["ls"], lambda l: n[l["creator"]] >= 2)
     k = n[l["creator"]]
