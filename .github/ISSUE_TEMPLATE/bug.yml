@@ -1,0 +1,32 @@
+name: Bug
+description: Something on the site, in the runner, the engine or the contract does not work as described.
+labels: [bug]
+body:
+  - type: dropdown
+    id: part
+    attributes:
+      label: Where
+      options:
+        - The site (casebookduel.com)
+        - The hourly runner (m1)
+        - casebook-memory (engine)
+        - The seal contract (chain)
+        - The server setup (ops)
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what you expected
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: How to see it
+      description: A link, a command or the steps.
+  - type: input
+    id: version
+    attributes:
+      label: Version or browser
+      placeholder: "casebook-memory 0.1.0, or Safari 18 on iPhone"

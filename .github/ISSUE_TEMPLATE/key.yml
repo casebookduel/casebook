@@ -1,0 +1,26 @@
+name: A key looks wrong
+description: An answer key on casebookduel.com that the chain does not support.
+title: "Hour <n>: <question kind>"
+body:
+  - type: input
+    id: hour
+    attributes:
+      label: Hour
+      description: The hour's number, as in casebookduel.com/hours/<n>.
+      placeholder: "40"
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: The question and its key
+      description: Paste the question and the key the page shows.
+    validations:
+      required: true
+  - type: textarea
+    id: chain
+    attributes:
+      label: What the chain shows
+      description: The transaction, log, query or call you checked, and what it returns.
+    validations:
+      required: true
