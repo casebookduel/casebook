@@ -19,6 +19,7 @@ export const LESSONS_CONTRACT = /^0x[0-9a-fA-F]{40}$/.test(raw) ? raw.toLowerCas
 const FROM = BigInt(Number(process.env.LESSONS_FROM || 0) || 0);
 export const TEACH_ON = OPEN.has("teach") && !!LESSONS_CONTRACT && !!TOKEN_CA;
 const SPAN = 9_000_000n;
+const DEAD = "0x000000000000000000000000000000000000dEaD";
 
 // what a browser wallet sends and reads, computed here so nothing is typed by hand
 export const CALLS = {
@@ -57,12 +58,16 @@ export async function getLessons() {
   cacheLife("minutes");   // shorter lives count as runtime data and would stop the page prerendering; the form shows the new id at once
   const st = runner();
   const read = (functionName: string, address = LESSONS_CONTRACT, abi: Abi = ABI) => client.readContract({ address: address as `0x${string}`, abi, functionName }) as Promise<bigint | number | string>;
-  let chainLessons: Lesson[] | null = null, fee = 0n, decimals = 18, symbol = "CASE";
+  let chainLessons: Lesson[] | null = null, fee = 0n, decimals = 18, symbol = "CASE", burned = 0n, supply = 0n;
   try {
-    const [f, d, s, ls] = await Promise.all([read("fee"), read("decimals", TOKEN_CA, erc20Abi as Abi), read("symbol", TOKEN_CA, erc20Abi as Abi), onChain()]);
-    [fee, decimals, symbol, chainLessons] = [f as bigint, Number(d), String(s), ls];
+    const token = { address: TOKEN_CA as `0x${string}`, abi: erc20Abi } as const;
+    const [f, d, s, ls, bd, sp] = await Promise.all([read("fee"), read("decimals", TOKEN_CA, erc20Abi as Abi), read("symbol", TOKEN_CA, erc20Abi as Abi), onChain(),
+      client.readContract({ ...token, functionName: "balanceOf", args: [DEAD] }), client.readContract({ ...token, functionName: "totalSupply" })]);
+    [fee, decimals, symbol, chainLessons, burned, supply] = [f as bigint, Number(d), String(s), ls, bd, sp];
   } catch { /* shown below as not live */ }
   const known = new Map(st.lessons.map((l) => [l.id, l]));
   const lessons = (chainLessons ?? st.lessons).map((l) => known.get(l.id) ?? l).sort((a, b) => b.id - a.id);
-  return { live: chainLessons !== null, contract: LESSONS_CONTRACT, token: TOKEN_CA, fee: fee.toString(), feeText: formatUnits(fee, decimals), symbol, lessons, taught: st.taught };
+  // everything ever sent to 0x…dEaD, by anyone (lesson fees and other burns alike), and the supply it is a share of
+  return { live: chainLessons !== null, contract: LESSONS_CONTRACT, token: TOKEN_CA, fee: fee.toString(), feeText: formatUnits(fee, decimals), symbol, lessons, taught: st.taught,
+    burned: Number(formatUnits(burned, decimals)), supply: Number(formatUnits(supply, decimals)) };
 }

@@ -6,14 +6,15 @@ import { Arrow } from "@/components/Icons";
 import NotebookTabs from "@/components/NotebookTabs";
 import Pixel from "@/components/Pixel";
 import { OPEN } from "@/lib/open";
-import { TEACH_ON } from "@/lib/lessons";
+import { getLessons, TEACH_ON } from "@/lib/lessons";
+import LessonRow from "@/components/LessonRow";
 import { LEAGUE_ON } from "@/lib/league";
 import Plates from "@/components/Plates";
 import RecordPanel from "@/components/RecordPanel";
 import Rise from "@/components/Rise";
 import Terminal from "@/components/Terminal";
 import Ticket from "@/components/Ticket";
-import { fmt, hasLocale, lp, nf, pf } from "@/i18n/config";
+import { fmt, hasLocale, HTML_LANG, lp, nf, pf } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { clock, diffLines, EXPLORER, getDuel, lite, MODEL_LINE, REFLECT_RULE, RPC_METHODS, when } from "@/lib/duel";
 import { pText } from "@/lib/facts";
@@ -28,7 +29,7 @@ const names = (s: string) => s.split(/(Robinhood Chain|Holmes|Moriarty)/).map((p
 
 // Every section opens the same way: a hairline with its label and place, then a two-sentence headline whose second
 // sentence steps back, then one line of context. The working panel under it carries the proof.
-// What opens after launch, in this order. Listed here once built; a card links to its page once it is open.
+// The files beyond the duel, open ones first. Listed here once built; a card links to its page once it is open.
 const NEXT: { id: string; icon: string; path?: string; on?: boolean }[] = [
   { id: "trail", icon: "trail", path: "/trail", on: OPEN.has("trail") }, { id: "teach", icon: "flame", path: "/teach", on: TEACH_ON },
   { id: "skill", icon: "note", path: "/install#notebook", on: ENGINE_LIVE && OPEN.has("skill") }, { id: "league", icon: "podium", path: "/league", on: LEAGUE_ON },
@@ -49,7 +50,7 @@ function Head({ n, of, kicker, a, b, lede, id }: { n: number; of: number; kicker
 export default async function Home({ params }: PageProps<"/[lang]">) {
   const { lang } = await params;
   if (!hasLocale(lang)) notFound();
-  const [duel, t] = await Promise.all([getDuel(), getDictionary(lang)]);
+  const [duel, t, les] = await Promise.all([getDuel(), getDictionary(lang), TEACH_ON ? getLessons() : null]);
   const L = (p: string) => lp(lang, p), N = nf(lang), P = pf(lang);
   // the kind labels follow the page's language; questions and answers stay as the agents saw them
   const hours = lite(duel).map((h) => ({ ...h, rows: h.rows.map((r) => ({ ...r, label: t.kinds[r.kind as keyof typeof t.kinds] ?? r.label })) }));
@@ -83,6 +84,15 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
     { icon: "check", k: m.k4, t: m.t4, d: fmt(m.d4, { h: last.holmes, m: last.moriarty, n: last.n }) },
     { icon: "note", k: m.k5, t: m.t5, d: notes ? fmt(m.d5, { h: notes.hour, a: change.filter((c) => c.k === "add").length, d: change.filter((c) => c.k === "del").length, c: chars }) : "" },
   ] : [];
+  // Teach Holmes leads the page while it is open: the latest hour's score, everything burned so far, every lesson.
+  // `o` shifts the numbers of the sections after it.
+  const tt = t.teach, o = les ? 1 : 0;
+  const teach = les && {
+    a: last ? fmt(tt.home.a, { a: last.holmes, n: last.n, h: last.hour }) : tt.a,
+    b: last ? (last.holmes < last.n ? tt.home.b : tt.home.bAll) : tt.b,
+    fee: N(Number(les.feeText)), kept: les.lessons.filter((l) => l.status === "kept").length,
+    share: les.supply ? new Intl.NumberFormat(HTML_LANG[lang], { style: "percent", maximumFractionDigits: 2 }).format(les.burned / les.supply) : "",
+  };
   const steps = last ? [
     { cmd: "curl -s {origin}/data/duel.json | jq '.since'", out: JSON.stringify(s, null, 2) },
     { cmd: "curl -s {origin}/data/duel.json | jq -c '.hours[-1].tasks[] | [.kind, .holmes.ok, .moriarty.ok]'", out: last.rows.map((r) => JSON.stringify([r.kind, r.h.ok, r.m.ok])).join("\n") },
@@ -109,8 +119,9 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
                 <h1><span className="holmes">{t.hero.h1a}</span><span className="moriarty">{t.hero.h1b}</span></h1>
                 <p className="lede">{t.hero.lede}</p>
                 <div className="cta">
-                  {last && <Link className="btn btn-solid" href={L(`/hours/${last.hour}`)}>{fmt(t.hero.open, { h: last.hour })} <Arrow /></Link>}
-                  {CASES_LIVE ? <Link className="btn btn-line" href={L("/case")}>{t.case.a.replace(/[.。]$/, "")}</Link> : <Link className="btn btn-line" href={L("/how")}>{t.hero.how}</Link>}
+                  {les && <Link className="btn btn-solid" href={L("/teach")}>{tt.kicker} <Arrow /></Link>}
+                  {last && <Link className={`btn ${les ? "btn-line" : "btn-solid"}`} href={L(`/hours/${last.hour}`)}>{fmt(t.hero.open, { h: last.hour })} <Arrow /></Link>}
+                  {!les && (CASES_LIVE ? <Link className="btn btn-line" href={L("/case")}>{t.case.a.replace(/[.。]$/, "")}</Link> : <Link className="btn btn-line" href={L("/how")}>{t.hero.how}</Link>)}
                 </div>
                 {TOKEN_CA && <CopyCa ca={TOKEN_CA} label="$CASE" where="ca-end" />}
               </div>
@@ -132,9 +143,43 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
         </section>
       </div>
 
+      {les && teach && (
+        <section className="sect band-2" aria-labelledby="teach">
+          <div className="wrap">
+            <Head id="teach" n={1} of={6} kicker={tt.kicker} a={teach.a} b={teach.b} lede={fmt(tt.lede, { fee: teach.fee })} />
+            <Rise className="panel">
+              <ol className="teach3">
+                <li className="rv">
+                  <span className="mlabel">{tt.home.burned}</span><strong className="num">{N(les.burned)}</strong>
+                  <p><a className="proof" href={`${EXPLORER}/token/${les.token}?tab=holders`} target="_blank" rel="noreferrer">{fmt(tt.home.burnedNote, { p: teach.share })}</a></p>
+                </li>
+                <li className="rv">
+                  <span className="mlabel">{tt.home.lessons}</span><strong className="num">{N(les.lessons.length)}</strong>
+                  <p>{fmt(tt.home.lessonsNote, { k: teach.kept })}</p>
+                </li>
+                <li className="rv">
+                  <span className="mlabel">{tt.home.fee}</span><strong className="num">{teach.fee} <small>$CASE</small></strong>
+                  <p>{tt.home.feeNote}</p>
+                </li>
+              </ol>
+              <div className="teach-go rv">
+                <Link className="btn btn-solid" href={L("/teach")}>{tt.kicker} <Arrow /></Link>
+                <a className="proof" href={`${EXPLORER}/address/${les.contract}`} target="_blank" rel="noreferrer">{tt.contract}</a>
+              </div>
+            </Rise>
+            {les.lessons.length > 0 && (
+              <Rise className="teach-board">
+                <div className="rv">{les.lessons.slice(0, 3).map((l) => <LessonRow key={l.id} l={l} t={tt} L={L} />)}</div>
+                <p className="rv"><Link className="more" href={L("/teach") + "#all"}>{tt.home.every} <Arrow size={15} /></Link></p>
+              </Rise>
+            )}
+          </div>
+        </section>
+      )}
+
       <section className="sect" aria-labelledby="record">
         <div className="wrap">
-          <Head id="record" n={1} of={5} kicker={t.record.kicker} a={t.record.a} b={t.record.b} lede={fmt(t.record.lede, { k: duel.ruleV2From })} />
+          <Head id="record" n={1 + o} of={5 + o} kicker={t.record.kicker} a={t.record.a} b={t.record.b} lede={fmt(t.record.lede, { k: duel.ruleV2From })} />
           <Rise><div className="rv"><RecordPanel lang={lang} t={t.record} levelTag={lv ? t.levels.tag : undefined} hours={panelHours} kinds={kindTotals} all={allS} stats={{ from: duel.ruleV2From, holmes: s.holmes, moriarty: s.moriarty, n: s.n, ahead: s.ahead, of: s.hours, p: duel.pairs.p }} /></div></Rise>
           <p className="note">{fmt(t.record.note, { k: duel.ruleV2From })}</p>
         </div>
@@ -142,14 +187,14 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
       <section className="sect band-2" aria-labelledby="memory">
         <div className="wrap">
-          <Head id="memory" n={2} of={5} kicker={t.memory.kicker} a={t.memory.a} b={t.memory.b} lede={t.memory.lede} />
+          <Head id="memory" n={2 + o} of={5 + o} kicker={t.memory.kicker} a={t.memory.a} b={t.memory.b} lede={t.memory.lede} />
           {notes && <Rise><div className="rv"><NotebookTabs t={t.memory} hour={notes.hour} text={notes.text} diff={change} /></div></Rise>}
         </div>
       </section>
 
       <section className="sect" aria-labelledby="method">
         <div className="wrap">
-          <Head id="method" n={3} of={5} kicker={m.kicker} a={m.a} b={m.b} lede={last ? fmt(m.lede, { h: last.hour }) : undefined} />
+          <Head id="method" n={3 + o} of={5 + o} kicker={m.kicker} a={m.a} b={m.b} lede={last ? fmt(m.lede, { h: last.hour }) : undefined} />
           <Rise className="panel steps-panel">
             <ol className="steps5">
               {steps5.map((st, i) => (
@@ -174,7 +219,7 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
       <section className="sect band-2" aria-labelledby="build">
         <div className="wrap">
-          <Head id="build" n={4} of={5} kicker={t.build.kicker} a={t.build.a} b={t.build.b} lede={t.build.lede} />
+          <Head id="build" n={4 + o} of={5 + o} kicker={t.build.kicker} a={t.build.a} b={t.build.b} lede={t.build.lede} />
           <Rise className="dev">
             <div className="rv">{steps.length > 0 && <Terminal steps={steps} title={t.build.terminal} />}</div>
             <div className="rv">
@@ -198,15 +243,15 @@ export default async function Home({ params }: PageProps<"/[lang]">) {
 
       <section className="sect" aria-labelledby="next">
         <div className="wrap">
-          <Head id="next" n={5} of={5} kicker={t.next.kicker} a={t.next.a} b={t.next.b} lede={t.next.lede} />
+          <Head id="next" n={5 + o} of={5 + o} kicker={t.next.kicker} a={t.next.a} b={t.next.b} lede={t.next.lede} />
           <Rise className="panel">
             <ol className="next4">
-              {NEXT.map((x) => ({ ...x, href: x.on ? x.path : undefined })).map((x, i) => (
+              {NEXT.map((x, i) => ({ ...x, i, href: x.on ? x.path : undefined })).sort((a, b) => Number(!!b.href) - Number(!!a.href)).map((x, k) => (
                 <li className="rv" key={x.id}>
                   <Pixel name={x.icon} />
-                  <span className="mlabel">{String(i + 1).padStart(2, "0")} · {x.href ? t.next.live : t.next.soon}</span>
-                  <h3>{t.next.items[i].t}</h3>
-                  <p>{t.next.items[i].d}</p>
+                  <span className="mlabel">{String(k + 1).padStart(2, "0")} · {x.href ? t.next.live : t.next.soon}</span>
+                  <h3>{t.next.items[x.i].t}</h3>
+                  <p>{t.next.items[x.i].d}</p>
                   {x.href && <Link className="more" href={L(x.href)}>{t.next.open} <Arrow size={15} /></Link>}
                 </li>
               ))}

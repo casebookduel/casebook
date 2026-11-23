@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import BurnDesk from "@/components/BurnDesk";
+import LessonRow from "@/components/LessonRow";
 import { fmt, hasLocale, lp } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { EXPLORER } from "@/lib/explorer";
@@ -14,7 +14,6 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const N = new Intl.NumberFormat("en-US");
-const short = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 
 export default async function Teach({ params }: PageProps<"/[lang]/teach">) {
   const { lang } = await params;
@@ -23,27 +22,7 @@ export default async function Teach({ params }: PageProps<"/[lang]/teach">) {
   const t = dict.teach, L = (p: string) => lp(lang, p);
   const fee = N.format(Number(d.feeText));
   const kept = d.taught.map((id) => d.lessons.find((l) => l.id === id)).filter((l): l is Lesson => !!l);
-  const [hBefore, hAfter] = t.hoursL.split("{h}");
-  const row = (l: Lesson) => (
-    <div className="version" key={l.id}>
-      <div>
-        <h3>#{l.id}</h3>
-        <p className="meta"><span className={`lesson-st ${l.status}`}>{t.status[l.status]}</span><br />{fmt(t.by, { a: short(l.teacher) })}</p>
-      </div>
-      <div>
-        {l.status === "filtered"
-          ? <p className="dim">{fmt(t.hidden, { why: ((t.why as Record<string, string>)[l.why ?? ""] ?? l.why ?? "").replace(/[.。]$/, "") })}</p>
-          : <p className="lesson-text">{l.text}</p>}
-        {l.n > 0 && (
-          <p className="meta">
-            {fmt(t.result, { w: l.with_ok, h: l.without_ok, n: l.n })} · {hBefore}
-            {l.hours.map((h, i) => <span key={h}>{i ? ", " : ""}<Link prefetch={false} href={L(`/hours/${h}`)}>{h}</Link></span>)}{hAfter}
-          </p>
-        )}
-        {l.tx && <p className="meta"><a href={`${EXPLORER}/tx/${l.tx}`} target="_blank" rel="noreferrer">{t.tx}</a></p>}
-      </div>
-    </div>
-  );
+  const row = (l: Lesson) => <LessonRow key={l.id} l={l} t={t} L={L} />;
   return (
     <div className="wrap">
       <div className="page-top">

@@ -51,6 +51,26 @@ async function onChain(): Promise<Entry[]> {
   return out;
 }
 
+export type LeagueAnswer = { entry: number; hour: number; q: string; answer: string | null; ok: boolean; calls: number };
+
+// Every answer a notebook gave (m1/league.py writes league_results.jsonl), without its tool calls: the hour pages show
+// them under each question, so a score on the board can be checked question by question against the answer keys.
+export async function getLeagueAnswers(): Promise<LeagueAnswer[]> {
+  "use cache";
+  cacheLife("minutes");
+  const rows: LeagueAnswer[] = [];
+  if (!LEAGUE_ON) return rows;
+  let file = "";
+  try { file = fs.readFileSync(path.join(DIR, "league_results.jsonl"), "utf8"); } catch { return rows; }
+  for (const l of file.split("\n")) {
+    try {
+      const r = JSON.parse(l);
+      rows.push({ entry: Number(r.entry), hour: Number(r.hour), q: String(r.q), answer: r.answer == null ? null : String(r.answer), ok: r.ok === true, calls: Number(r.calls) || 0 });
+    } catch { /* a blank line, or one still being written */ }
+  }
+  return rows;
+}
+
 export async function getLeague() {
   "use cache";
   cacheLife("minutes");   // shorter lives count as runtime data and would stop the page prerendering; the form shows the new id at once

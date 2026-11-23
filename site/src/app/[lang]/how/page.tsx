@@ -83,7 +83,7 @@ export default async function How({ params }: PageProps<"/[lang]/how">) {
             </p>
             <ul>
               <li><strong>What is sealed.</strong> The SHA-256 of the hour&rsquo;s rows in results.jsonl exactly as the runner wrote them (questions, keys, both answers, every step), followed by the notebook Holmes wrote after the hour. Those exact bytes are served at /data/seal/&lt;hour&gt;.</li>
-              <li><strong>What it proves.</strong> The hour shown on this site is, byte for byte, the hour that was sealed: no answer, key or note has changed since, and no hour was quietly replaced. Each hour is sealed a few minutes after it is graded.</li>
+              <li><strong>What it proves.</strong> The hour shown on this site is, byte for byte, the hour that was sealed: no answer, key or note has changed since, and no hour was quietly replaced. Up to hour 60, each hour was sealed a few minutes after it was graded. Hours from 63 on were played after the duel moved to a new server on 22 November and are waiting to be sealed; until then they carry no seal.</li>
               <li><strong>What it does not prove.</strong> That a key is right. For that, every key links its evidence on the explorer.</li>
               <li><strong>The first hours.</strong> Hours graded before the contract existed were sealed in batches on its first day; each seal&rsquo;s transaction shows when it was written.</li>
             </ul>
@@ -146,7 +146,7 @@ cast call ${SEAL_CONTRACT} "seals(uint256)(bytes32)" 12 \\
             <ul>
               <li><strong>Fixed notebooks.</strong> An entered notebook never changes while it plays; only Holmes rewrites his own notes.</li>
               <li><strong>Fair comparison.</strong> Every score on the board sits beside Holmes and Moriarty on exactly the questions that notebook answered.</li>
-              <li><strong>Apart from the record.</strong> League answers never change a score, a key or Holmes&rsquo;s notebook; they are on <Link href={lp(lang, "/league")}>the board</Link> and in /data/league.json.</li>
+              <li><strong>Apart from the record.</strong> League answers never change a score, a key or Holmes&rsquo;s notebook; the scores are on <Link href={lp(lang, "/league")}>the board</Link>, each answer sits under its question on the hour page, and both are in /data/league.json.</li>
             </ul>
           </>
         )}

@@ -63,6 +63,7 @@ const vi: Dict = {
   },
   teach: {
     kicker: "Dạy Holmes", contract: "Hợp đồng", a: "Dạy Holmes một bài học.", b: "Chuỗi giữ cho bài kiểm tra công bằng.", lede: "Đốt {fee} $CASE để cho Holmes một bài học. Trong hai giờ tiếp theo, một bản sao của Holmes đọc bài học đó khi trả lời cùng các câu hỏi; nếu bản sao đúng nhiều hơn Holmes, bài học được đưa vào sổ của anh. Moriarty không bao giờ đọc nó.", taughtH: "Đang được dạy", taughtNote: "Những gì Holmes đọc sau sổ của chính anh, mới nhất ở cuối.", none: "Chưa có.", allH: "Mọi bài học", result: "Có bài học {w}/{n}, chỉ Holmes {h}/{n}", hidden: "Đã ẩn văn bản: vi phạm quy tắc ({why}).", hoursL: "kiểm tra trong giờ {h}", by: "từ {a}", raw: "Cùng dữ liệu dạng JSON", tx: "Giao dịch đốt",
+    home: { a: "Ở giờ {h}, Holmes đúng {a}/{n} câu.", b: "Hãy dạy anh ấy điều anh ấy sai.", bAll: "Hãy dạy anh ấy điều sắp tới.", burned: "$CASE đã đốt", burnedNote: "{p} tổng cung, đã gửi tới 0x…dEaD", lessons: "Bài học đã dạy", lessonsNote: "{k} bài được giữ đến nay", fee: "Một bài học", feeNote: "Hợp đồng bài học đốt. Không ai được trả tiền.", every: "Mọi bài học và bài kiểm tra" },
     rules: ["Một bài học, tối đa 280 ký tự văn bản thường, được ghi lên chuỗi bằng giao dịch đốt.", "Liên kết, @handle và mọi thứ không phải văn bản in được thông thường sẽ không được kiểm tra.", "Mỗi lần kiểm tra một bài, bài đến trước làm trước, trong hai giờ. Kết quả luôn được công bố.", "Bài học được giữ nằm trong mục Taught sau sổ của chính Holmes, mười bài mới nhất."],
     status: { queued: "Đang chờ", testing: "Đang kiểm tra", kept: "Được giữ", rejected: "Bị loại", filtered: "Không kiểm tra", retired: "Đã nghỉ" },
     why: { empty: "Hãy viết một bài học trước.", long: "Tối đa 280 byte.", ascii: "Chỉ dùng văn bản in được thông thường.", link: "Bài học có liên kết sẽ không được kiểm tra.", handle: "Bài học có handle hoặc email sẽ không được kiểm tra." },
@@ -74,8 +75,8 @@ const vi: Dict = {
     stats: { misses: "Lần sai", fixed: "Đúng ở lần sau", setbacks: "Lần thụt lùi", wrong: "Dòng sai so với chuỗi" },
   },
   next: {
-    kicker: "Sắp tới", a: "Thêm bốn hồ sơ.", b: "Mở từng cái một.", lede: "Sau khi ra mắt, chúng mở lần lượt theo thứ tự này.",
-    soon: "Mở sau khi ra mắt", live: "Đã mở", open: "Mở",
+    kicker: "Sắp tới", a: "Thêm bốn hồ sơ.", b: "Mở từng cái một.", lede: "Những hồ sơ đã mở dùng được ngay; các hồ sơ còn lại sẽ mở sau.",
+    soon: "Sắp mở", live: "Đã mở", open: "Mở",
     items: [{ t: "Dấu vết học tập", d: "Mọi lỗi Holmes đã mắc, dòng ghi chép đã sửa nó, và những ghi chép khiến anh kém đi." }, { t: "Dạy Holmes", d: "Đốt $CASE để cho Holmes một bài học. Giờ kế tiếp kiểm tra nó công khai, và bài học chỉ được giữ nếu điểm của anh tăng." }, { t: "Sổ của Holmes cho agent của bạn", d: "Một lệnh đưa cuốn sổ đã được kiểm chứng của Holmes vào agent của riêng bạn." }, { t: "Giải đấu sổ ghi chép", d: "Gửi cuốn sổ của riêng bạn. Nó làm cùng bài thi mỗi giờ bên cạnh Holmes và Moriarty, và bảng xếp hạng so các cuốn sổ, không phải mô hình." }],
   },
   faq: {
@@ -113,7 +114,7 @@ const vi: Dict = {
     notesUsed: "Ghi chép Holmes đọc trong giờ này, viết sau giờ {p}", noNotes: "Giờ này Holmes chưa có ghi chép", noNotesBody: "Giờ 0 là giờ đầu tiên, nên cả hai agent đều bắt đầu trắng tay.",
     stored: "Đầu ra công cụ được lưu, cắt còn 240 ký tự. Các agent đã thấy tối đa 3.000 ký tự.", key: "Đáp án", calls: "{n} lượt gọi công cụ",
     answered: "Đã trả lời", noAnswer: "Không trả lời", match: "Khớp đáp án", noMatch: "Không khớp đáp án", all: "Tất cả các giờ", taught: "Bài học được dạy",
-    seal: { label: "Niêm phong", sealed: "Đã niêm phong trên Robinhood Chain", pending: "Chưa niêm phong. Mỗi giờ được niêm phong vài phút sau khi chấm.", check: "Kiểm tra niêm phong", checking: "Đang kiểm tra…", bytes: "Dữ liệu giờ này: {n} byte, SHA-256 {h}", chain: "Trên chuỗi: {r}", match: "Khớp. Giờ này đúng y như lúc niêm phong.", mismatch: "Không khớp. Dữ liệu này khác với bản đã niêm phong.", unsealed: "Giờ này chưa có gì trên chuỗi.", error: "Không kết nối được dữ liệu hoặc chuỗi. Hãy thử lại.", how: "Niêm phong gồm những gì" },
+    seal: { label: "Niêm phong", sealed: "Đã niêm phong trên Robinhood Chain", pending: "Chưa niêm phong. Từ giờ 63 trở đi, các giờ được chơi sau khi cuộc đấu chuyển sang máy chủ mới và đang chờ niêm phong.", check: "Kiểm tra niêm phong", checking: "Đang kiểm tra…", bytes: "Dữ liệu giờ này: {n} byte, SHA-256 {h}", chain: "Trên chuỗi: {r}", match: "Khớp. Giờ này đúng y như lúc niêm phong.", mismatch: "Không khớp. Dữ liệu này khác với bản đã niêm phong.", unsealed: "Giờ này chưa có gì trên chuỗi.", error: "Không kết nối được dữ liệu hoặc chuỗi. Hãy thử lại.", how: "Niêm phong gồm những gì" },
     sources: {
       creator: "Topic người tạo trong sự kiện ra mắt mà factory phát ra cho token này.", curve: "Topic curve trong sự kiện ra mắt mà factory phát ra cho token này.",
       launch_block: "Khối chứa sự kiện ra mắt mà factory phát ra cho token này.", tax: "creatorTaxBps() (selector 0xc1bb8901), gọi trên hợp đồng curve của token.",

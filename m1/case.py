@@ -10,7 +10,7 @@ Env: CASE_DIR (default m1/cases), DUEL_DIR (where Holmes's notes_latest.md is; d
 Exit codes: 0 done, 2 no clean question for this token (nothing was spent), 1 failure."""
 import hashlib, json, os, secrets, sys, threading, time
 import duel as D
-from duel import FACTORY, T_LAUNCH, T_GRAD, T_BUY, T_SELL, T_CURVE_GRAD, T_TRANSFER, SEL_TAX, LOG_SHOW, LEVELS, Skip, a1, a2, bn, pad, ref, qry, logs, call
+from duel import BURN, FACTORY, T_LAUNCH, T_GRAD, T_BUY, T_SELL, T_CURVE_GRAD, T_TRANSFER, SEL_TAX, LOG_SHOW, LEVELS, Skip, a1, a2, bn, pad, ref, qry, logs, call
 
 CASE_DIR = os.environ.get("CASE_DIR") or os.path.join(D.HERE, "cases")
 NOTES = os.path.join(os.environ.get("DUEL_DIR") or D.OUT, "notes_latest.md")
@@ -74,8 +74,10 @@ def build(kind, token):
     elif kind == "creator_sold":
         out = logs([T_TRANSFER, pad(cre)], b, head, tok)
         direct = [y for y in out if a2(y) == cur]
-        if out and not direct: raise Skip("its creator moved tokens only to other addresses (maybe a sale through a router), so yes or no would be ambiguous")
+        burned = [y for y in out if a2(y) in BURN]
+        if not direct and len(burned) < len(out): raise Skip("its creator moved tokens to other addresses (maybe a sale through a router), so yes or no would be ambiguous")
         ev = [ref(l["log"], "launch event (creator, curve)"), qry("token Transfers from the creator to the curve", tok, [T_TRANSFER, pad(cre), pad(cur)], b, head, len(direct))]
+        if burned and not direct: ev.append(ref(burned[0], "the creator's burn: a Transfer to the burn address, not a sale"))
         t = dict(q=f"Up to block {head}, did the creator of the token {tok} from the launchpad factory {FACTORY} sell any of it from the creator's own address, sending tokens straight to the token's bonding curve? Answer yes or no.",
                  a="yes" if direct else "no", evidence=ev + ([ref(direct[0], "first such Transfer")] if direct else []))
         x["B"] = head

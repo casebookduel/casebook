@@ -63,6 +63,7 @@ const tr: Dict = {
   },
   teach: {
     kicker: "Holmes'a öğret", contract: "Sözleşme", a: "Holmes'a bir ders öğret.", b: "Testin dürüstlüğünü zincir korur.", lede: "Holmes'a bir ders vermek için {fee} $CASE yak. Sonraki iki saat boyunca dersi okuyan bir Holmes kopyası aynı soruları cevaplar; kopya Holmes'tan daha çok doğru bilirse ders onun defterine girer. Moriarty onu asla okumaz.", taughtH: "Şu an öğrenilenler", taughtNote: "Holmes'un kendi notlarından sonra okudukları, en yenisi sonda.", none: "Henüz yok.", allH: "Tüm dersler", result: "Dersle {n} sorudan {w}, yalnız Holmes {n} sorudan {h}", hidden: "Metin gizlendi: kuralları çiğnedi ({why}).", hoursL: "{h}. saatlerde test edildi", by: "{a} tarafından", raw: "Aynı veri JSON olarak", tx: "Yakma işlemi",
+    home: { a: "Holmes {h}. saatte {n} sorudan {a} tanesini bildi.", b: "Kaçırdığını ona öğret.", bAll: "Sıradakini ona öğret.", burned: "Yakılan $CASE", burnedNote: "Arzın {p} kadarı, 0x…dEaD adresine gönderildi", lessons: "Verilen dersler", lessonsNote: "şu ana kadar {k} tanesi kaldı", fee: "Bir ders", feeNote: "Ders kontratı yakar. Kimseye ödeme yapılmaz.", every: "Tüm dersler ve testleri" },
     rules: ["Bir ders, en fazla 280 karakter düz metin; yakma işlemiyle zincire yazılır.", "Bağlantılar, @kullanıcı adları ve düz yazdırılabilir metin dışındaki her şey test edilmez.", "Her seferinde bir ders, gelen sırayla, iki saat boyunca test edilir. Sonuç her durumda yayınlanır.", "Kalan dersler Holmes'un kendi notlarından sonraki Taught bölümünde durur, en yeni on tanesi."],
     status: { queued: "Sırada", testing: "Test ediliyor", kept: "Kaldı", rejected: "Reddedildi", filtered: "Test edilmedi", retired: "Emekli" },
     why: { empty: "Önce bir ders yaz.", long: "En fazla 280 bayt.", ascii: "Yalnızca düz yazdırılabilir metin.", link: "Bağlantı içeren dersler test edilmez.", handle: "Kullanıcı adı veya e-posta içeren dersler test edilmez." },
@@ -74,8 +75,8 @@ const tr: Dict = {
     stats: { misses: "Hata", fixed: "Bir sonrakinde doğru", setbacks: "Gerileme", wrong: "Zincirle çelişen satır" },
   },
   next: {
-    kicker: "Sırada", a: "Dört dosya daha.", b: "Tek tek açılacaklar.", lede: "Lansmandan sonra bu sırayla tek tek açılırlar.",
-    soon: "Lansmandan sonra açılır", live: "Açık", open: "Aç",
+    kicker: "Sırada", a: "Dört dosya daha.", b: "Tek tek açılacaklar.", lede: "Açık olanlar şimdi çalışıyor, diğerleri sırada.",
+    soon: "Yakında", live: "Açık", open: "Aç",
     items: [{ t: "Öğrenme izi", d: "Holmes'un yaptığı her hata, onu düzelten not ve onu daha kötü yapan notlar." }, { t: "Holmes'a öğret", d: "Holmes'a bir ders vermek için $CASE yak. Bir sonraki saat dersi herkesin önünde test eder; ders yalnızca puanı yükselirse kalır." }, { t: "Ajanın için Holmes'un defteri", d: "Tek bir komut, Holmes'un test edilmiş defterini kendi ajanına koyar." }, { t: "Defter ligi", d: "Kendi defterini yarışmaya sok. Holmes ve Moriarty ile aynı saatlik sınava girer; sıralama modelleri değil defterleri karşılaştırır." }],
   },
   faq: {
@@ -113,7 +114,7 @@ const tr: Dict = {
     notesUsed: "Holmes'un bu saat okuduğu notlar, {p}. saatten sonra yazıldı", noNotes: "Holmes'un bu saat henüz notu yoktu", noNotesBody: "0. saat ilk saattir, bu yüzden iki ajan da boş başladı.",
     stored: "Araç çıktıları 240 karaktere kısaltılarak saklanır. Ajanlar 3.000 karaktere kadar gördü.", key: "Cevap anahtarı", calls: "{n} araç çağrısı",
     answered: "Cevap:", noAnswer: "Cevap yok", match: "Cevap anahtarıyla eşleşiyor", noMatch: "Cevap anahtarıyla eşleşmiyor", all: "Tüm saatler", taught: "Öğretilen dersler",
-    seal: { label: "Mühür", sealed: "Robinhood Chain üzerinde mühürlendi", pending: "Henüz mühürlenmedi. Her saat, puanlandıktan birkaç dakika sonra mühürlenir.", check: "Mührü doğrula", checking: "Doğrulanıyor…", bytes: "Bu saatin verisi: {n} bayt, SHA-256 {h}", chain: "Zincirde: {r}", match: "Eşleşiyor. Bu saat, mühürlendiği hâliyle aynı.", mismatch: "Eşleşmiyor. Bu veri mühürlenenden farklı.", unsealed: "Bu saat için zincirde henüz kayıt yok.", error: "Veriye ya da zincire ulaşılamadı. Tekrar dene.", how: "Mühür neyi kapsar" },
+    seal: { label: "Mühür", sealed: "Robinhood Chain üzerinde mühürlendi", pending: "Henüz mühürlenmedi. 63. saatten itibaren saatler, düello yeni bir sunucuya taşındıktan sonra oynandı ve mühürlenmeyi bekliyor.", check: "Mührü doğrula", checking: "Doğrulanıyor…", bytes: "Bu saatin verisi: {n} bayt, SHA-256 {h}", chain: "Zincirde: {r}", match: "Eşleşiyor. Bu saat, mühürlendiği hâliyle aynı.", mismatch: "Eşleşmiyor. Bu veri mühürlenenden farklı.", unsealed: "Bu saat için zincirde henüz kayıt yok.", error: "Veriye ya da zincire ulaşılamadı. Tekrar dene.", how: "Mühür neyi kapsar" },
     sources: {
       creator: "Fabrikanın bu token için yaydığı lansman olayındaki yaratıcı topic'i.", curve: "Fabrikanın bu token için yaydığı lansman olayındaki curve topic'i.",
       launch_block: "Fabrikanın bu token için yaydığı lansman olayının bloğu.", tax: "Token'ın curve kontratında çağrılan creatorTaxBps() (selector 0xc1bb8901).",

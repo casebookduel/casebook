@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import BurnDesk from "@/components/BurnDesk";
-import { fmt, hasLocale } from "@/i18n/config";
+import { fmt, hasLocale, lp } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import { EXPLORER } from "@/lib/explorer";
 import { getLeague, LEAGUE_CALLS, LEAGUE_HOURS, LEAGUE_MAX, LEAGUE_ON } from "@/lib/league";
@@ -37,13 +38,13 @@ export default async function League({ params }: PageProps<"/[lang]/league">) {
         {d.entries.length ? (
           <ol className="board">
             {d.entries.map((e, i) => (
-              <li key={e.id} className={`board-row ${e.status}`}>
+              <li key={e.id} id={`e${e.id}`} className={`board-row ${e.status}`}>
                 <span className="board-rank">{e.n ? i + 1 : "–"}</span>
                 <div className="board-main">
                   <p><b>#{e.id}</b> <span className={`lesson-st ${e.status}`}>{t.status[e.status]}</span> <span className="dim">{fmt(t.by, { a: short(e.player) })}</span></p>
                   {e.n > 0 && (
                     <p className="board-score">
-                      <b>{pct(e.right, e.n)}</b> {fmt(t.score, { r: e.right, n: e.n })} · {fmt(t.vs, { h: pct(e.holmes, e.n), m: pct(e.moriarty, e.n) })} · {fmt(t.progress, { k: e.hours.length, of: LEAGUE_HOURS })}
+                      <b>{pct(e.right, e.n)}</b> {fmt(t.score, { r: e.right, n: e.n })} · {fmt(t.vs, { h: pct(e.holmes, e.n), m: pct(e.moriarty, e.n) })} · <Link href={lp(lang, `/hours/${e.hours[e.hours.length - 1]}`)}>{fmt(t.progress, { k: e.hours.length, of: LEAGUE_HOURS })}</Link>
                     </p>
                   )}
                   {e.status === "filtered"

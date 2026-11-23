@@ -63,6 +63,7 @@ const es: Dict = {
   },
   teach: {
     kicker: "Enseña a Holmes", contract: "El contrato", a: "Enséñale una lección a Holmes.", b: "La cadena mantiene honesta la prueba.", lede: "Quema {fee} $CASE para darle a Holmes una lección. Durante las dos horas siguientes, una copia de Holmes la lee mientras responde las mismas preguntas; si esa copia acierta más que Holmes, la lección entra en su cuaderno. Moriarty nunca la lee.", taughtH: "Lo que ha aprendido", taughtNote: "Lo que Holmes lee tras sus propias notas, lo más reciente al final.", none: "Aún no.", allH: "Todas las lecciones", result: "Con ella {w} de {n}, Holmes solo {h} de {n}", hidden: "Texto oculto: incumplió las reglas ({why}).", hoursL: "probada en las horas {h}", by: "de {a}", raw: "Los mismos datos en JSON", tx: "Transacción de quema",
+    home: { a: "Holmes acertó {a} de {n} en la hora {h}.", b: "Enséñale lo que falló.", bAll: "Enséñale lo que viene.", burned: "$CASE quemados", burnedNote: "{p} del suministro, enviado a 0x…dEaD", lessons: "Lecciones enseñadas", lessonsNote: "{k} se han quedado hasta ahora", fee: "Una lección", feeNote: "La quema el contrato de lecciones. Nadie cobra.", every: "Todas las lecciones y sus pruebas" },
     rules: ["Una lección, de hasta 280 caracteres de texto simple, escrita en la cadena por la transacción de quema.", "Los enlaces, los @usuarios y todo lo que no sea texto imprimible simple no se prueban.", "Se prueba una lección a la vez, por orden de llegada, durante dos horas. El resultado se publica siempre.", "Las lecciones que se quedan van en una sección Taught tras las notas de Holmes, las diez más recientes."],
     status: { queued: "En cola", testing: "En prueba", kept: "Se queda", rejected: "Rechazada", filtered: "Sin probar", retired: "Retirada" },
     why: { empty: "Escribe una lección primero.", long: "Como máximo 280 bytes.", ascii: "Solo texto imprimible simple.", link: "Las lecciones con enlaces no se prueban.", handle: "Las lecciones con usuarios o correos no se prueban." },
@@ -74,8 +75,8 @@ const es: Dict = {
     stats: { misses: "Fallos", fixed: "Acierto a la siguiente", setbacks: "Retrocesos", wrong: "Líneas falsas en cadena" },
   },
   next: {
-    kicker: "Lo siguiente", a: "Cuatro expedientes más.", b: "Se abren uno a uno.", lede: "Tras el lanzamiento se abren uno a uno, en este orden.",
-    soon: "Se abre tras el lanzamiento", live: "Abierto", open: "Abrir",
+    kicker: "Lo siguiente", a: "Cuatro expedientes más.", b: "Se abren uno a uno.", lede: "Los abiertos ya funcionan; los demás vienen después.",
+    soon: "Próximamente", live: "Abierto", open: "Abrir",
     items: [{ t: "El rastro del aprendizaje", d: "Cada error de Holmes, la nota que lo corrigió y las notas que lo empeoraron." }, { t: "Enseña a Holmes", d: "Quema $CASE para darle a Holmes una lección. La hora siguiente la prueba en público, y solo se queda si su puntuación sube." }, { t: "El cuaderno de Holmes, para tu agente", d: "Un comando pone el cuaderno ya probado de Holmes en tu propio agente." }, { t: "La liga de cuadernos", d: "Inscribe tu propio cuaderno. Hace el mismo examen de cada hora junto a Holmes y Moriarty, y la tabla compara cuadernos, no modelos." }],
   },
   faq: {
@@ -113,7 +114,7 @@ const es: Dict = {
     notesUsed: "Las notas que Holmes leyó en esta hora, escritas tras la hora {p}", noNotes: "En esta hora Holmes aún no tenía notas", noNotesBody: "La hora 0 es la primera, así que ambos agentes empezaron en blanco.",
     stored: "Las salidas de las herramientas se guardan recortadas a 240 caracteres. Los agentes vieron hasta 3000.", key: "Solución", calls: "Llamadas a herramientas: {n}",
     answered: "Respondió", noAnswer: "Sin respuesta", match: "Coincide con la solución", noMatch: "No coincide con la solución", all: "Todas las horas", taught: "Lecciones enseñadas",
-    seal: { label: "Sello", sealed: "Sellada en Robinhood Chain", pending: "Aún sin sellar. Cada hora se sella unos minutos después de calificarse.", check: "Comprobar el sello", checking: "Comprobando…", bytes: "Datos de esta hora: {n} bytes, SHA-256 {h}", chain: "En la cadena: {r}", match: "Coincide. Esta hora es exactamente lo que se selló.", mismatch: "No coincide. Estos datos difieren de lo sellado.", unsealed: "Esta hora aún no tiene nada en la cadena.", error: "No se pudo acceder a los datos o a la cadena. Inténtalo de nuevo.", how: "Qué cubre un sello" },
+    seal: { label: "Sello", sealed: "Sellada en Robinhood Chain", pending: "Aún sin sellar. Las horas desde la 63 se jugaron después de que el duelo se mudara a un servidor nuevo y esperan su sello.", check: "Comprobar el sello", checking: "Comprobando…", bytes: "Datos de esta hora: {n} bytes, SHA-256 {h}", chain: "En la cadena: {r}", match: "Coincide. Esta hora es exactamente lo que se selló.", mismatch: "No coincide. Estos datos difieren de lo sellado.", unsealed: "Esta hora aún no tiene nada en la cadena.", error: "No se pudo acceder a los datos o a la cadena. Inténtalo de nuevo.", how: "Qué cubre un sello" },
     sources: {
       creator: "El topic del creador en el evento de lanzamiento que la fábrica emitió para este token.", curve: "El topic de la curva en el evento de lanzamiento que la fábrica emitió para este token.",
       launch_block: "El bloque del evento de lanzamiento que la fábrica emitió para este token.", tax: "creatorTaxBps() (selector 0xc1bb8901), llamado en el contrato de la curva del token.",

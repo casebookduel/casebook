@@ -62,6 +62,7 @@ const en = {
   },
   teach: {
     kicker: "Teach Holmes", contract: "The contract", a: "Teach Holmes one lesson.", b: "The chain keeps the test honest.", lede: "Burn {fee} $CASE to give Holmes one lesson. For the next two hours a copy of Holmes reads it while answering the same questions; if that copy gets more right than Holmes, the lesson joins his notebook. Moriarty never reads it.", taughtH: "Taught now", taughtNote: "What Holmes reads after his own notes, newest last.", none: "None yet.", allH: "Every lesson", result: "With it {w} of {n}, Holmes alone {h} of {n}", hidden: "Text hidden: it broke the rules ({why}).", hoursL: "tested in hours {h}", by: "by {a}", raw: "The same data as JSON", tx: "Burn transaction",
+    home: { a: "Holmes got {a} of {n} in hour {h}.", b: "Teach him what he missed.", bAll: "Teach him what comes next.", burned: "$CASE burned", burnedNote: "{p} of the supply, sent to 0x…dEaD", lessons: "Lessons taught", lessonsNote: "{k} kept so far", fee: "One lesson", feeNote: "Burned by the lessons contract. Nobody is paid.", every: "Every lesson and its test" },
     rules: ["One lesson, at most 280 characters of plain text, written to the chain by the burn transaction.", "Links, @handles and anything but plain printable text are not tested.", "One lesson is tested at a time, oldest first, over two hours. The result is published either way.", "Kept lessons sit in a Taught section after Holmes's own notes, the newest ten."],
     status: { queued: "Queued", testing: "Testing", kept: "Kept", rejected: "Rejected", filtered: "Not tested", retired: "Retired" },
     why: { empty: "Write a lesson first.", long: "At most 280 bytes.", ascii: "Plain printable text only.", link: "Links are not tested.", handle: "Handles and e-mail addresses are not tested." },
@@ -73,8 +74,8 @@ const en = {
     stats: { misses: "Misses", fixed: "Right the next time", setbacks: "Setbacks", wrong: "Lines wrong on chain" },
   },
   next: {
-    kicker: "Next", a: "Four more files.", b: "They open one at a time.", lede: "After launch they open one by one, in this order.",
-    soon: "Opens after launch", live: "Live", open: "Open it",
+    kicker: "Next", a: "Four more files.", b: "They open one at a time.", lede: "The open ones work now; the others follow.",
+    soon: "Coming", live: "Live", open: "Open it",
     items: [{ t: "The learning trail", d: "Every mistake Holmes made, the note that fixed it, and the notes that made him worse." }, { t: "Teach Holmes", d: "Burn $CASE to give Holmes one lesson. The next hour tests it in public, and it stays only if his score rises." }, { t: "Holmes's notebook, for your agent", d: "One command puts Holmes's tested notebook into your own agent." }, { t: "The notebook league", d: "Enter your own notebook. It sits the same hourly exam beside Holmes and Moriarty, and the board ranks notebooks, not models." }],
   },
   faq: {
@@ -112,7 +113,7 @@ const en = {
     notesUsed: "The notes Holmes read this hour, written after hour {p}", noNotes: "Holmes had no notes yet this hour", noNotesBody: "Hour 0 is the first hour, so both agents started empty.",
     stored: "Tool outputs are stored cut to 240 characters. The agents saw up to 3,000.", key: "Answer key", calls: "{n} tool call{n:s}",
     answered: "Answered", noAnswer: "No answer", match: "Matches the key", noMatch: "Does not match the key", all: "All hours", taught: "Taught lessons",
-    seal: { label: "Seal", sealed: "Sealed on Robinhood Chain", pending: "Not sealed yet. Each hour is sealed a few minutes after it is graded.", check: "Check the seal", checking: "Checking…", bytes: "This hour's data: {n} bytes, SHA-256 {h}", chain: "On chain: {r}", match: "Match. This hour is exactly what was sealed.", mismatch: "No match. This data differs from what was sealed.", unsealed: "Nothing on chain for this hour yet.", error: "Could not reach the data or the chain. Try again.", how: "What a seal covers" },
+    seal: { label: "Seal", sealed: "Sealed on Robinhood Chain", pending: "Not sealed yet. Hours from 63 on were played after the duel moved to a new server and are waiting to be sealed.", check: "Check the seal", checking: "Checking…", bytes: "This hour's data: {n} bytes, SHA-256 {h}", chain: "On chain: {r}", match: "Match. This hour is exactly what was sealed.", mismatch: "No match. This data differs from what was sealed.", unsealed: "Nothing on chain for this hour yet.", error: "Could not reach the data or the chain. Try again.", how: "What a seal covers" },
     sources: {
       creator: "The creator topic of the factory's launch event for this token.", curve: "The curve topic of the factory's launch event for this token.",
       launch_block: "The block of the factory's launch event for this token.", tax: "creatorTaxBps() (selector 0xc1bb8901), called on the token's curve contract.",

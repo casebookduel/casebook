@@ -223,6 +223,9 @@ pre.block { margin: 0; padding: 20px 22px; border-radius: 10px; background: var(
 .final { display: flex; gap: 10px; align-items: flex-start; padding: 4px 0 14px; }
 .final svg { flex: none; margin-top: 2px; }
 .final > span { min-width: 0; overflow-wrap: anywhere; }
+.league-ans { margin-top: 16px; padding: 14px 20px 2px; border-radius: 10px; border: 1px solid var(--line-2); }
+.league-ans .mlabel { display: block; margin-bottom: 10px; }
+.league-ans .final { padding: 0 0 12px; }
 details.used { margin-top: 8px; border: 1px solid var(--line); border-radius: 10px; padding: 0 20px; }
 details.used summary { cursor: pointer; padding: 16px 0; font-weight: 550; }
 details.used pre { margin: 0 0 20px; }
@@ -615,6 +618,18 @@ html.lenis, html.lenis body { height: auto; }
 .trail-sect > h2 { font-size: clamp(1.5rem, 2.4vw, 2rem); margin-bottom: 10px; }
 .trail-sect > p.dim { max-width: 70ch; margin-bottom: 18px; color: var(--ink-dim); }
 .trail-sect .version { padding: 22px 0; }
+/* Teach Holmes on the home page: three figures in a panel and the way in, then the newest lessons */
+.teach3 { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.teach3 li { display: grid; align-content: start; gap: 10px; padding: 26px 22px 24px; }
+.teach3 li + li { border-left: 1px solid var(--line); }
+.teach3 .num { font-family: var(--font-display), sans-serif; font-variation-settings: "wdth" 112; font-weight: 650; font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1; letter-spacing: -0.02em; color: var(--ink); }
+.teach3 .num small { font-size: 0.42em; font-weight: 600; letter-spacing: 0.02em; color: var(--ink-dim); }
+.teach3 p { font-size: 0.9rem; color: var(--ink-dim); }
+.teach-go { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 28px; padding: 18px 22px; border-top: 1px solid var(--line); }
+.teach-board { margin-top: 18px; }
+.teach-board .version { padding: 24px 0; }
+.teach-board .more { margin-top: 6px; }
+@media (max-width: 720px) { .teach3 { grid-template-columns: minmax(0, 1fr); } .teach3 li + li { border-left: 0; border-top: 1px solid var(--line); } }
 .kind-row { display: grid; grid-template-columns: 230px minmax(0, 1fr); gap: 12px 48px; padding: 22px 0; border-top: 1px solid var(--line); }
 .kind-row h3, .trail-sect .version h3 { font-size: 1.1rem; }
 .kind-row .meta { color: var(--ink-dim); font-size: 0.88rem; margin-top: 6px; }

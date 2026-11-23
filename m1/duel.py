@@ -50,6 +50,7 @@ SEL_TAX = kec("creatorTaxBps()")[:10]                    # on the curve
 SEL_BALANCE = kec("balanceOf(address)")[:10]
 SEL_SUPPLY = kec("totalSupply()")[:10]
 ZERO = "0x" + "0" * 40
+BURN = {ZERO, "0x000000000000000000000000000000000000dead"}   # a transfer here is a burn, never a sale
 MODEL = os.environ.get("DUEL_MODEL", "deepseek/deepseek-v4.1-flash")
 CAP_USD = float(os.environ.get("DUEL_CAP", "8"))
 LEVELS = {1: dict(n=6, calls=8), 2: dict(n=8, calls=12), 3: dict(n=8, calls=16)}   # questions an hour, tool calls a question
@@ -265,8 +266,9 @@ def creator_sold(c):
     for l in c["ls"]:
         out = [x for x in xfers(c).get(l["token"], []) if a1(x) == l["creator"]]
         direct = [x for x in out if a2(x) == l["curve"]]
+        rest = [x for x in out if a2(x) != l["curve"] and a2(x) not in BURN]
         if direct: yes.append((l, direct))
-        elif not out: no.append((l, []))   # a creator who moved tokens elsewhere (maybe a sale through a router) is ambiguous
+        elif not rest: no.append((l, []))   # burns are not sales; tokens moved elsewhere (maybe a sale through a router) stay ambiguous
     if not yes and not no: raise Skip("every creator moved tokens only to addresses other than the curve")
     l, d = c["rng"].choice(yes if yes and (not no or c["rng"].random() < 0.5) else no)
     ev = [ref(l["log"], "launch event (creator, curve)"), qry("token Transfers from the creator to the curve", l["token"], [T_TRANSFER, pad(l["creator"]), pad(l["curve"])], l["block"], B, len(d))]
@@ -851,7 +853,8 @@ def main():
     rng = random.Random(int(time.time()))
     notes_path = os.path.join(OUT, "notes_latest.md")
     notes = open(notes_path).read() if os.path.exists(notes_path) else ""
-    done = next_hour(load_rows())
+    # DUEL_FROM: after a move that left the last hours (already sealed on chain) on a dead machine, number on above them
+    done = max(next_hour(load_rows()), int(os.environ.get("DUEL_FROM") or 0))
     for i in range(done, done + hours):
         if spent() >= CAP_USD:
             log(f"spend cap ${CAP_USD} reached (${spent():.3f}); stopping")

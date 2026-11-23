@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Fragment } from "react";
 import { notFound } from "next/navigation";
 import { Arrow, Back, Check, Cross } from "@/components/Icons";
 import Linked from "@/components/Linked";
@@ -8,6 +9,7 @@ import { fmt, hasLocale, lp, nf } from "@/i18n/config";
 import { getDictionary } from "@/i18n/dictionaries";
 import type { Dict } from "@/i18n/en";
 import { EXPLORER, getDuel, when, type Attempt, type Evidence, type Step } from "@/lib/duel";
+import { getLeagueAnswers } from "@/lib/league";
 import { getSeals, RPC_URL, SEAL_CONTRACT, sealsCall } from "@/lib/seal";
 
 // The page is fully decided by the cached duel data, so a short blocking render is fine.
@@ -73,10 +75,12 @@ function Arm({ who, a, t }: { who: "Holmes" | "Moriarty"; a: Attempt; t: Dict["h
 export default async function HourPage({ params }: PageProps<"/[lang]/hours/[hour]">) {
   const { hour, lang } = await params;
   if (!hasLocale(lang)) notFound();
-  const [duel, dict] = await Promise.all([getDuel(), getDictionary(lang)]);
+  const [duel, dict, answers] = await Promise.all([getDuel(), getDictionary(lang), getLeagueAnswers()]);
   const t = dict.hour, L = (p: string) => lp(lang, p), N = nf(lang);
   const h = duel.hours.find((x) => String(x.hour) === hour);
   if (!h) notFound();
+  // the league notebooks that sat this hour's exam, each scored on the same questions as Holmes and Moriarty
+  const mine = answers.filter((a) => a.hour === h.hour), seats = [...new Set(mine.map((a) => a.entry))].sort((a, b) => a - b);
   const prev = duel.hours.find((x) => x.hour === h.hour - 1), next = duel.hours.find((x) => x.hour === h.hour + 1);
   const seal = SEAL_CONTRACT ? (await getSeals())[h.hour] : undefined;
 
@@ -97,6 +101,7 @@ export default async function HourPage({ params }: PageProps<"/[lang]/hours/[hou
             <span>{h.rule === "v1" ? t.ruleFirst : t.ruleReal}</span>
             {duel.levels && <span>{fmt(dict.levels.badge, { n: h.level })} · {[dict.levels.n1, dict.levels.n2, dict.levels.n3][h.level - 1]}</span>}
             {h.taught.length > 0 && <span>{t.taught} <Link href={L("/teach")}>{h.taught.map((id) => `#${id}`).join(" ")}</Link></span>}
+            {seats.length > 0 && <span>{dict.league.kicker}{seats.map((id) => { const r = mine.filter((a) => a.entry === id); return <Fragment key={id}> <Link href={L(`/league#e${id}`)}>#{id} {r.filter((a) => a.ok).length}/{r.length}</Link></Fragment>; })}</span>}
           </div>
           {SEAL_CONTRACT && (
             <div className="seal-row">
@@ -138,6 +143,17 @@ export default async function HourPage({ params }: PageProps<"/[lang]/hours/[hou
             <Arm who="Holmes" a={task.holmes} t={t} />
             <Arm who="Moriarty" a={task.moriarty} t={t} />
           </div>
+          {mine.some((a) => a.q === task.q) && (
+            <div className="league-ans">
+              <span className="mlabel">{dict.league.kicker}</span>
+              {mine.filter((a) => a.q === task.q).map((a) => (
+                <p key={a.entry} className={`final ${a.ok ? "ok" : "no"}`}>
+                  {a.ok ? <Check /> : <Cross />}
+                  <span><Link href={L(`/league#e${a.entry}`)}>#{a.entry}</Link> {a.answer ? <>{t.answered} <span className="mono">{a.answer}</span></> : t.noAnswer} <span className="dim">· {fmt(t.calls, { n: a.calls })}</span></span>
+                </p>
+              ))}
+            </div>
+          )}
         </article>
       ))}
 

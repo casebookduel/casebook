@@ -23,7 +23,8 @@ function Chart({ hours, sel, onPick, tag, pc }: { hours: HourLite[]; sel: number
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const ro = new ResizeObserver(() => setU(1000 / Math.max(1, el.getBoundingClientRect().width)));
+    // a hidden chart measures 0 px wide: keep the last scale instead of blowing the labels up to the whole viewBox
+    const ro = new ResizeObserver(() => { const w = el.getBoundingClientRect().width; if (w > 0) setU(1000 / w); });
     ro.observe(el);
     return () => ro.disconnect();
   }, []);

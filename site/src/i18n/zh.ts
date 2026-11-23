@@ -63,6 +63,7 @@ const zh: Dict = {
   },
   teach: {
     kicker: "教 Holmes", contract: "合约", a: "教 Holmes 一条经验。", b: "测试是否公正，由链上记录保证。", lede: "销毁 {fee} $CASE，给 Holmes 一条经验。接下来的两个小时，一个读了这条经验的 Holmes 副本会回答同样的题目；如果它比 Holmes 答对得更多，这条经验就会进入他的笔记。Moriarty 永远不会读到它。", taughtH: "目前已学会", taughtNote: "Holmes 在自己的笔记之后读到的内容，最新的在最后。", none: "暂时没有。", allH: "所有经验", result: "读了它 {w}/{n}，只靠 Holmes {h}/{n}", hidden: "文字已隐藏：违反了规则（{why}）。", hoursL: "在第 {h} 小时测试", by: "来自 {a}", raw: "同样的数据（JSON）", tx: "销毁交易",
+    home: { a: "第 {h} 小时，Holmes 答对 {n} 题中的 {a} 题。", b: "把他答错的教给他。", bAll: "把接下来的教给他。", burned: "已销毁的 $CASE", burnedNote: "占总量的 {p}，已发送至 0x…dEaD", lessons: "已教的经验", lessonsNote: "目前保留 {k} 条", fee: "一条经验", feeNote: "由经验合约销毁，不付给任何人。", every: "每条经验及其测试" },
     rules: ["一条经验，最多 280 个字符的纯文本，由销毁交易写到链上。", "带链接、@用户名或非可打印纯文本的经验不会被测试。", "每次只测试一条，按先后顺序，测试两个小时；无论结果如何都会公开。", "保留下来的经验放在 Holmes 自己笔记之后的 Taught 部分，只保留最新的十条。"],
     status: { queued: "排队中", testing: "测试中", kept: "已保留", rejected: "未通过", filtered: "未测试", retired: "已退役" },
     why: { empty: "请先写一条经验。", long: "最多 280 字节。", ascii: "只能使用可打印的纯文本。", link: "带链接的经验不会被测试。", handle: "带用户名或邮箱的经验不会被测试。" },
@@ -74,8 +75,8 @@ const zh: Dict = {
     stats: { misses: "失误", fixed: "下一次答对", setbacks: "退步", wrong: "链上不成立的笔记行" },
   },
   next: {
-    kicker: "接下来", a: "还有四份档案。", b: "上线后逐一开放。", lede: "上线后，它们会按这个顺序逐一开放。",
-    soon: "上线后开放", live: "已开放", open: "打开",
+    kicker: "接下来", a: "还有四份档案。", b: "逐一开放。", lede: "已开放的现在就能用，其余的随后开放。",
+    soon: "即将开放", live: "已开放", open: "打开",
     items: [{ t: "学习轨迹", d: "Holmes 犯过的每个错误、修正它的那条笔记，以及让他变差的笔记。" }, { t: "教 Holmes", d: "销毁 $CASE，给 Holmes 一条经验。下一个小时会公开测试它，只有他的分数提高才会保留。" }, { t: "给你的智能体用 Holmes 的笔记", d: "一条命令，把 Holmes 经过检验的笔记装进你自己的智能体。" }, { t: "笔记联赛", d: "提交你自己的笔记。它会和 Holmes、Moriarty 一起参加同样的每小时考试，排行榜比的是笔记，不是模型。" }],
   },
   faq: {
@@ -113,7 +114,7 @@ const zh: Dict = {
     notesUsed: "Holmes 本小时读到的笔记，写于第 {p} 小时之后", noNotes: "这一小时 Holmes 还没有笔记", noNotesBody: "第 0 小时是第一个小时，所以两个智能体都从空白开始。",
     stored: "工具输出截断为 240 个字符后存储。智能体当时最多能看到 3,000 个字符。", key: "标准答案", calls: "{n} 次工具调用",
     answered: "回答", noAnswer: "未作答", match: "与标准答案一致", noMatch: "与标准答案不符", all: "所有小时", taught: "教给他的经验",
-    seal: { label: "封存", sealed: "已在 Robinhood Chain 上封存", pending: "尚未封存。每个小时会在评分几分钟后封存。", check: "核对封存", checking: "核对中…", bytes: "本小时数据：{n} 字节，SHA-256 {h}", chain: "链上：{r}", match: "一致。本小时与封存时完全相同。", mismatch: "不一致。这些数据与封存的内容不同。", unsealed: "链上还没有这个小时的记录。", error: "无法连接数据或链，请重试。", how: "封存包含什么" },
+    seal: { label: "封存", sealed: "已在 Robinhood Chain 上封存", pending: "尚未封存。从第 63 小时起的各小时是在对决迁到新服务器之后进行的，正在等待封存。", check: "核对封存", checking: "核对中…", bytes: "本小时数据：{n} 字节，SHA-256 {h}", chain: "链上：{r}", match: "一致。本小时与封存时完全相同。", mismatch: "不一致。这些数据与封存的内容不同。", unsealed: "链上还没有这个小时的记录。", error: "无法连接数据或链，请重试。", how: "封存包含什么" },
     sources: {
       creator: "工厂合约为该代币触发的发射事件中的创建者 topic。", curve: "工厂合约为该代币触发的发射事件中的曲线 topic。",
       launch_block: "工厂合约为该代币触发发射事件的区块。", tax: "creatorTaxBps()（selector 0xc1bb8901），在该代币的曲线合约上调用。",
