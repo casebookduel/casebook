@@ -1,0 +1,16 @@
+[Unit]
+Description=Casebook launch files (every launch's file, from chain data; answers the site on 127.0.0.1:7461)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=casebook
+WorkingDirectory=/opt/casebook
+# chain reads only: no keys, no model; the duel's state is never touched
+Environment=DUEL_DIR=/opt/casebook/m1/out
+ExecStart=/usr/bin/python3 -u m1/files.py run
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

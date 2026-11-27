@@ -15,6 +15,7 @@ import { getDictionary } from "@/i18n/dictionaries";
 import { clock, getDuel } from "@/lib/duel";
 import { EXPLORER } from "@/lib/explorer";
 import { CASES_LIVE } from "@/lib/cases";
+import { FILES_ON } from "@/lib/files";
 import { ENGINE_LIVE, GITHUB_URL, SITE_URL, TOKEN_CA, X_URL } from "@/lib/site";
 import { OPEN } from "@/lib/open";
 import { TEACH_ON } from "@/lib/lessons";
@@ -61,7 +62,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
               <Image src="/ring-128.png" alt="" width={34} height={34} />
               <span>Casebook</span>
             </Link>
-            <NavLinks lang={lang} labels={CASES_LIVE ? { ...t.nav, case: t.case.nav } : t.nav} />
+            <NavLinks lang={lang} labels={{ ...t.nav, ...(CASES_LIVE ? { case: t.case.nav } : {}), ...(FILES_ON ? { files: t.files.nav } : {}) }} />
             {(X_URL || GITHUB_URL) && (
               <span className="socials">
                 {X_URL && <a href={X_URL} target="_blank" rel="noreferrer" aria-label="Casebook on X"><XLogo /></a>}
@@ -90,7 +91,7 @@ export default async function RootLayout({ children, params }: LayoutProps<"/[la
                   </div>
                 )}
               </div>
-              <nav aria-label={f.watch}><span className="mlabel">{f.watch}</span>{last && <Link href={lp(lang, `/hours/${last.hour}`)}>{f.latest}</Link>}<Link href={lp(lang, "/hours")}>{f.every}</Link><Link href={lp(lang, "/notebook")}>{f.notebook}</Link>{OPEN.has("trail") && <Link href={lp(lang, "/trail")}>{t.next.items[0].t}</Link>}{TEACH_ON && <Link href={lp(lang, "/teach")}>{t.next.items[1].t}</Link>}{LEAGUE_ON && <Link href={lp(lang, "/league")}>{t.next.items[3].t}</Link>}{CASES_LIVE && <Link href={lp(lang, "/case")}>{t.case.kicker}</Link>}</nav>
+              <nav aria-label={f.watch}><span className="mlabel">{f.watch}</span>{last && <Link href={lp(lang, `/hours/${last.hour}`)}>{f.latest}</Link>}<Link href={lp(lang, "/hours")}>{f.every}</Link><Link href={lp(lang, "/notebook")}>{f.notebook}</Link>{OPEN.has("trail") && <Link href={lp(lang, "/trail")}>{t.next.items[0].t}</Link>}{TEACH_ON && <Link href={lp(lang, "/teach")}>{t.next.items[1].t}</Link>}{LEAGUE_ON && <Link href={lp(lang, "/league")}>{t.next.items[3].t}</Link>}{CASES_LIVE && <Link href={lp(lang, "/case")}>{t.case.kicker}</Link>}{FILES_ON && <Link href={lp(lang, "/files")}>{t.files.nav}</Link>}</nav>
               <nav aria-label={f.check}><span className="mlabel">{f.check}</span><Link href={lp(lang, "/how")}>{f.how}</Link><a href="/data/results.jsonl">{f.raw}</a><a href="/data/duel.json">{f.summary}</a></nav>
               <nav aria-label={f.build}><span className="mlabel">{f.build}</span><Link href={lp(lang, "/how") + "#prompt"}>{f.prompts}</Link><Link href={lp(lang, "/how") + "#grading"}>{f.grading}</Link><Link href={home + "#build"}>{f.harness}</Link>{ENGINE_LIVE && <Link href={lp(lang, "/install")}>{f.engine}</Link>}</nav>
             </div>

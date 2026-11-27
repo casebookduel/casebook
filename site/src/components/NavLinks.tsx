@@ -5,11 +5,11 @@ import { lp, type Locale } from "@/i18n/config";
 
 // Wide screens show the links in a row. Narrow ones fold them into one menu built like the language menu (a native
 // <details>, so it works with the keyboard as is), which leaves room for the Latest-hour button in every language.
-type Labels = { hours: string; notebook: string; how: string; menu: string; case?: string };
+type Labels = { hours: string; notebook: string; how: string; menu: string; case?: string; files?: string };
 
 export default function NavLinks({ lang, labels }: { lang: Locale; labels: Labels }) {
   const path = usePathname();
-  const links = [[lp(lang, "/hours"), labels.hours], [lp(lang, "/notebook"), labels.notebook],
+  const links = [...(labels.files ? [[lp(lang, "/files"), labels.files]] : []), [lp(lang, "/hours"), labels.hours], [lp(lang, "/notebook"), labels.notebook],
     ...(labels.case ? [[lp(lang, "/case"), labels.case]] : []), [lp(lang, "/how"), labels.how]];
   const items = links.map(([href, text]) => (
     <Link key={href} href={href} aria-current={path === href || path.startsWith(href + "/") ? "page" : undefined}>{text}</Link>

@@ -56,9 +56,10 @@ export function holderCookie(address: string) {
 }
 
 // the holder's address from a valid cookie of today, else null
-export function holderFrom(req: Request): string | null {
+export const holderFrom = (req: Request) => holderFromHeader(req.headers.get("cookie") ?? "");
+export function holderFromHeader(cookie: string): string | null {
   if (!HOLDER_ON) return null;
-  const raw = (req.headers.get("cookie") ?? "").split(/;\s*/).find((c) => c.startsWith(COOKIE + "="))?.slice(COOKIE.length + 1);
+  const raw = cookie.split(/;\s*/).find((c) => c.startsWith(COOKIE + "="))?.slice(COOKIE.length + 1);
   const [addr, day, sig] = (raw ?? "").split(".");
   if (!addr || !sig || day !== today() || !/^0x[0-9a-f]{40}$/.test(addr)) return null;
   const want = Buffer.from(mac(`${addr}.${day}`)), got = Buffer.from(sig);

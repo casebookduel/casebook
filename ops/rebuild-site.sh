@@ -10,7 +10,8 @@ cd "$ROOT"
 [ -d site-next ] || { [ -d site-old ] && mv site-old site-next || true; }
 rsync -a --delete --exclude .next site/ site-next/
 chown -R casebook:casebook site-next
-if ! (cd site-next && runuser -u casebook -- sh -c 'set -a; . /etc/casebook/site.env; set +a; node node_modules/next/dist/bin/next build') > /tmp/casebook-build.log 2>&1; then
+# a build that crashes inside Next can hang instead of exiting (27 Nov: six hours after a RangeError), so it gets 30 min
+if ! (cd site-next && runuser -u casebook -- sh -c 'set -a; . /etc/casebook/site.env; set +a; timeout -k 60 1800 node node_modules/next/dist/bin/next build') > /tmp/casebook-build.log 2>&1; then
   tail -n 30 /tmp/casebook-build.log
   echo "rebuild-site: the build failed; the live site was not touched" >&2
   exit 1

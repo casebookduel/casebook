@@ -15,9 +15,12 @@ import { getSeals, RPC_URL, SEAL_CONTRACT, sealsCall } from "@/lib/seal";
 // The page is fully decided by the cached duel data, so a short blocking render is fine.
 export const instant = false;
 
+// Only the last day is built ahead; any older hour renders on its first visit, like /case/<id>. Building every hour
+// (x 7 languages, 1,432 pages on 27 Nov) took the 2-vCPU server 45 minutes and then crashed the build (RangeError:
+// Invalid string length), so the page count must not grow with the record.
 export async function generateStaticParams() {
   const duel = await getDuel();
-  const hours = duel.hours.map((h) => ({ hour: String(h.hour) }));
+  const hours = duel.hours.slice(-24).map((h) => ({ hour: String(h.hour) }));
   return hours.length ? hours : [{ hour: "0" }];   // Cache Components needs one; with no data yet it renders not-found
 }
 
